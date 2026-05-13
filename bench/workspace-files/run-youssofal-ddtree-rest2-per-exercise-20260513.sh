@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab"
 cd "$ROOT"
 
-STAMP="$(date '+%Y%m%d-%H%M%S')-youssofal-ddtree-rest-per-exercise"
+STAMP="$(date '+%Y%m%d-%H%M%S')-youssofal-ddtree-rest2-per-exercise"
 OUT_ROOT="$ROOT/.artifacts/dflash/ts-bench-matrix/$STAMP"
 mkdir -p "$OUT_ROOT"
 RUNNER_LOG="$OUT_ROOT/runner.log"
@@ -20,17 +20,6 @@ export PLAYWRIGHT_BROWSERS_PATH="${PLAYWRIGHT_BROWSERS_PATH:-/private/tmp/mlx-df
 DDTREE_ROOT="${DDTREE_ROOT:-$ROOT/_release/qwen36-dflash-ddtree-gateway/bench/ddtree-mlx}"
 
 EXERCISES=(
-  bank-account
-  binary-search
-  binary-search-tree
-  bowling
-  complex-numbers
-  connect
-  crypto-square
-  diamond
-  dnd-character
-  flatten-array
-  food-chain
   house
   pascals-triangle
   rational-numbers
@@ -46,7 +35,7 @@ EXERCISES=(
 )
 
 {
-  echo "[$(date '+%Y-%m-%dT%H:%M:%S%z')] starting Youssofal DDTree rest per-exercise"
+  echo "[$(date '+%Y-%m-%dT%H:%M:%S%z')] starting Youssofal DDTree rest2 per-exercise"
   echo "OUT_ROOT=$OUT_ROOT"
   echo "BENCHMARK_ENGINE_MATRIX_FILE=$BENCHMARK_ENGINE_MATRIX_FILE"
   echo "BENCH_PYTHON=$BENCH_PYTHON"

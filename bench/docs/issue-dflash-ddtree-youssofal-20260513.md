@@ -23,7 +23,9 @@
 - stderr: Metal `Discarded (victim of GPU error/recovery)`
 - 分類: ts-bench の通常不正解ではなく runtime / GPU recovery 系の infra failure。
 - 対応: `.artifacts/dflash/ts-bench-matrix/20260513-125348-youssofal-ddtree-rest-per-exercise/` で 1 exercise = 1 server に分離して再評価中。
-- 再評価結果: `bank-account` は 918.3s の通常失敗として確定。`binary-search` は 55.2s で成功。`binary-search-tree` は 55.7s の通常失敗。`bowling` は 113.3s の通常失敗。`complex-numbers` は 82.4s で成功。`connect` は server returncode `-6` の infra failure。`crypto-square` は 62.0s で成功。`diamond` は 74.9s で成功。`dnd-character` は server returncode `-6` の infra failure。`flatten-array` は 50.0s で成功。
+- 再評価結果: `bank-account` は 918.3s の通常失敗として確定。`binary-search` は 55.2s で成功。`binary-search-tree` は 55.7s の通常失敗。`bowling` は 113.3s の通常失敗。`complex-numbers` は 82.4s で成功。`connect` は server returncode `-6` の infra failure。`crypto-square` は 62.0s で成功。`diamond` は 74.9s で成功。`dnd-character` は server returncode `-6` の infra failure。`flatten-array` は 50.0s で成功。`food-chain` は ts-bench output JSON から 367.3s の通常失敗として復元した。
+- 追加症状: `food-chain` では benchmark harness 親プロセスが `results.jsonl` 追記前に消え、DDTree server PID `18504` が orphan になった。
+- 対応: `food-chain` のログと output JSON は保存し、orphan DDTree server だけ停止した。`house` 以降は `_shell/run-youssofal-ddtree-rest2-per-exercise-20260513.sh` で継続する。
 
 ## 4. per-exercise 実行時の依存キャッシュ肥大化
 
@@ -31,7 +33,16 @@
 - 対応: 失敗 artifact は直接削除済み。
 - 修正: `UV_CACHE_DIR`, `UV_TOOL_DIR`, `UV_TOOL_BIN_DIR`, `PLAYWRIGHT_BROWSERS_PATH` を `/private/tmp` 配下の共有パスに固定した。
 
-## 5. 現時点の採用判断
+## 5. rest2 再開時の `/private/tmp` 揮発
+
+- 症状: `20260513-142120-youssofal-ddtree-rest2-per-exercise` は `/private/tmp/mlx-dflash-bench-venv/bin/python` が消えており、全 exercise が `status=127` で即終了した。
+- 症状: venv 復旧後の `20260513-142638-youssofal-ddtree-rest2-per-exercise` は `/private/tmp/ts-bench` がなく、`FileNotFoundError` で startup failure になった。
+- 症状: `ts-bench` 復旧後の `20260513-142940-youssofal-ddtree-rest2-per-exercise` は、`exercism-typescript` submodule 復元前に前半 exercise が `ENOENT: exercism-typescript/exercises/practice` で即終了した。
+- 対応: `dflash-mlx` は既存成功 commit `20d68db3b3c0ae3dd6d3a2f0d3c10b2344ee514e` で venv を再作成し、`ts-bench` は `laiso/ts-bench` の `v1-final` を `/private/tmp/ts-bench` に復元、`git submodule update --init --recursive` で `exercism-typescript` を復元した。
+- 修正: DDTree root は `/private/tmp/ddtree-mlx` ではなく repo 内の `_release/qwen36-dflash-ddtree-gateway/bench/ddtree-mlx` を使うように runner を変更した。
+- 現状: `20260513-142940-youssofal-ddtree-rest2-per-exercise` が進行中。submodule 復元前の exercise はランキングに混ぜず、完了後に無効分を再実行する。
+
+## 6. 現時点の採用判断
 
 - download 数最大は `Youssofal`。
 - ただし追加計測時点では `TheCluster + DDTree` の ts-bench 成績を上回っていない。

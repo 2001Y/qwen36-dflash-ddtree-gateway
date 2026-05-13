@@ -15,6 +15,9 @@
 - `.artifacts/dflash/ts-bench-matrix/20260513-121353-youssofal-top25-continuation/`
 - `.artifacts/dflash/ts-bench-matrix/20260513-124434-youssofal-ddtree-top25-continuation/`
 - `.artifacts/dflash/ts-bench-matrix/20260513-125348-youssofal-ddtree-rest-per-exercise/`
+- `.artifacts/dflash/ts-bench-matrix/20260513-142120-youssofal-ddtree-rest2-per-exercise/` は `/private/tmp/mlx-dflash-bench-venv` 消失による infra failure。
+- `.artifacts/dflash/ts-bench-matrix/20260513-142638-youssofal-ddtree-rest2-per-exercise/` は `/private/tmp/ts-bench` 消失による infra failure。
+- `.artifacts/dflash/ts-bench-matrix/20260513-142940-youssofal-ddtree-rest2-per-exercise/` は `exercism-typescript` submodule 復元前の前半結果を含むため、完了後に無効分を再実行してからランキングへ反映する。
 
 集計ルール:
 
@@ -45,14 +48,15 @@
 
 - artifact: `.artifacts/dflash/ts-bench-matrix/20260513-124434-youssofal-ddtree-top25-continuation/`
 - rest artifact: `.artifacts/dflash/ts-bench-matrix/20260513-125348-youssofal-ddtree-rest-per-exercise/`
-- 有効通常結果: `10/25`
-- 通常成功: `6/10`
+- 有効通常結果: `11/25`
+- 通常成功: `6/11`
 - TOP_25 Score: `24.0%`
-- Valid-only Score: `60.0%`
+- Valid-only Score: `54.5%`
 - 成功: `anagram`, `binary-search`, `complex-numbers`, `crypto-square`, `diamond`, `flatten-array`
-- 通常失敗: `acronym`, `bank-account`, `binary-search-tree`, `bowling`
+- 通常失敗: `acronym`, `bank-account`, `binary-search-tree`, `bowling`, `food-chain`
 - infra failure: rest-per-exercise の `connect`, `dnd-character` は server returncode `-6`。initial run の `bank-account` でも server exit があったが、rest-per-exercise の `bank-account` は 918.3s の通常失敗として確定。
-- 補足: `food-chain` 以降は rest-per-exercise で継続評価中。
+- 補足: `food-chain` は ts-bench output JSON から復元した。harness 親プロセスが結果 JSONL 追記前に消え、DDTree server PID `18504` が orphan になったため停止した。`house` 以降は rest2 で継続予定。
+- rest2 補足: `/private/tmp` 配下の venv / ts-bench checkout が消えていたため、`20260513-142120` と `20260513-142638` は infra artifact として保存。venv、`ts-bench v1-final`、`exercism-typescript` submodule を復元後、`20260513-142940` が進行中。
 
 現時点では、download 数が最大でも `Youssofal` は `TheCluster + DDTree` を上回っていない。精度主指標では引き続き `TheCluster + DDTree` が第一候補。
 
@@ -177,7 +181,7 @@ DDTree は DFlash と別物として単独比較しているわけではあり�
 | `DFlash + vanch007` | 未評価 | `0/25` | `0` | `0` | `0` | DFlash engine abort 後のため未実行 |
 | `DFlash + nabi-chan` | 未評価 | `0/25` | `0` | `0` | `0` | DFlash engine abort 後のため未実行 |
 | `DDTree + TheCluster` | crash 前まで有効 | `10/25` | `7` | `3` | `1` | `dnd-character` で server exit |
-| `DDTree + Youssofal` | 部分評価中 | `10/25` | `6` | `4` | `2` | `connect` / `dnd-character` で server exit。継続中 |
+| `DDTree + Youssofal` | 部分評価中 | `11/25` | `6` | `5` | `2` | `connect` / `dnd-character` で server exit。`food-chain` 後に orphan cleanup |
 | `DDTree + froggeric` | crash 前まで有効 | `10/25` | `5` | `5` | `1` | `dnd-character` で server exit |
 | `DDTree + vanch007` | crash 前まで有効 | `10/25` | `5` | `5` | `1` | `dnd-character` で server exit |
 | `DDTree + nabi-chan` | crash 前まで有効 | `10/25` | `4` | `6` | `1` | tokenizer warning あり |
@@ -201,7 +205,7 @@ DDTree は DFlash と別物として単独比較しているわけではあり�
 | 2 | `DDTree + vanch007` | `20.0%` | `5/25` | `10` | `5` | `1` | `14` |
 | 5 | `DDTree + nabi-chan` | `16.0%` | `4/25` | `10` | `6` | `1` | `14` |
 | 参考 | `DFlash + Youssofal` | `16.0%` | `4/25` | `12` | `8` | `1` | `12` |
-| 参考 | `DDTree + Youssofal` | `24.0%` | `6/25` | `10` | `4` | `2` | `13` |
+| 参考 | `DDTree + Youssofal` | `24.0%` | `6/25` | `11` | `5` | `2` | `12` |
 | 未評価 | `DFlash + froggeric` | N/A | N/A | `0` | `0` | `0` | N/A |
 | 未評価 | `DFlash + vanch007` | N/A | N/A | `0` | `0` | `0` | N/A |
 | 未評価 | `DFlash + nabi-chan` | N/A | N/A | `0` | `0` | `0` | N/A |
@@ -216,7 +220,7 @@ DDTree は DFlash と別物として単独比較しているわけではあり�
 | 3 | `DFlash + TheCluster` | `50.0%` | `5/10` | 速度は最速 |
 | 3 | `DDTree + froggeric` | `50.0%` | `5/10` | 同率 |
 | 3 | `DDTree + vanch007` | `50.0%` | `5/10` | 同率 |
-| 参考 | `DDTree + Youssofal` | `60.0%` | `6/10` | rest-per-exercise 継続中 |
+| 参考 | `DDTree + Youssofal` | `54.5%` | `6/11` | `food-chain` は output JSON から復元 |
 | 6 | `DDTree + nabi-chan` | `40.0%` | `4/10` | tokenizer warning あり |
 | 参考 | `DFlash + Youssofal` | `33.3%` | `4/12` | crash 後結果を含むため低信頼 |
 
@@ -229,7 +233,7 @@ DDTree は DFlash と別物として単独比較しているわけではあり�
 | 3 | `DDTree + vanch007` | `10` | `161.7s` | `1616.7s` | `5` |
 | 4 | `DDTree + froggeric` | `10` | `172.9s` | `1729.1s` | `5` |
 | 5 | `DDTree + TheCluster` | `10` | `179.4s` | `1794.0s` | `7` |
-| 参考 | `DDTree + Youssofal` | `10` | `151.0s` | `1511.8s` | `6` |
+| 参考 | `DDTree + Youssofal` | `11` | `170.8s` | `1879.1s` | `6` |
 | 参考 | `DFlash + Youssofal` | `12` | `130.9s` | `1570.6s` | `4` |
 
 速度だけでは `DFlash + TheCluster` が最速。ただし成功数は `DDTree + TheCluster` が `1.40x` 上。
@@ -243,7 +247,7 @@ DDTree は DFlash と別物として単独比較しているわけではあり�
 | 3 | `DDTree + vanch007` | `323.3s` | `5` | `1616.7s` |
 | 4 | `DDTree + froggeric` | `345.8s` | `5` | `1729.1s` |
 | 5 | `DDTree + nabi-chan` | `387.4s` | `4` | `1549.6s` |
-| 参考 | `DDTree + Youssofal` | `252.0s` | `6` | `1511.8s` |
+| 参考 | `DDTree + Youssofal` | `313.2s` | `6` | `1879.1s` |
 | 参考 | `DFlash + Youssofal` | `392.6s` | `4` | `1570.6s` |
 
 ## 9. 失敗テストケース一覧
@@ -286,9 +290,9 @@ DDTree は DFlash と別物として単独比較しているわけではあり�
 ### `DDTree + Youssofal`
 
 - 成功: `anagram`, `binary-search`, `complex-numbers`, `crypto-square`, `diamond`, `flatten-array`
-- 通常失敗: `acronym`, `bank-account`, `binary-search-tree`, `bowling`
+- 通常失敗: `acronym`, `bank-account`, `binary-search-tree`, `bowling`, `food-chain`
 - infra failure: rest-per-exercise の `connect`, `dnd-character` -> `server_exited_during_ts_bench`
-- 未到達: `food-chain` 以降。rest-per-exercise で再評価中。
+- 未到達: `house` 以降。rest2 で再評価予定。
 
 ### `DFlash + Youssofal`
 

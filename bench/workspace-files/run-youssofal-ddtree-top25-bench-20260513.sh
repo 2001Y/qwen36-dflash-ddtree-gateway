@@ -13,6 +13,7 @@ export BENCHMARK_ENGINE_MATRIX_FILE="$ROOT/benchmark-engine-matrix-local.py"
 export PYTHONDONTWRITEBYTECODE=1
 export BENCH_PYTHON="${BENCH_PYTHON:-/private/tmp/mlx-dflash-bench-venv/bin/python}"
 export BENCH_VENV_BIN="${BENCH_VENV_BIN:-$(dirname "$BENCH_PYTHON")}"
+DDTREE_ROOT="${DDTREE_ROOT:-$ROOT/_release/qwen36-dflash-ddtree-gateway/bench/ddtree-mlx}"
 
 {
   echo "[$(date '+%Y-%m-%dT%H:%M:%S%z')] starting Youssofal DDTree TOP_25 continuation"
@@ -20,6 +21,7 @@ export BENCH_VENV_BIN="${BENCH_VENV_BIN:-$(dirname "$BENCH_PYTHON")}"
   echo "BENCHMARK_ENGINE_MATRIX_FILE=$BENCHMARK_ENGINE_MATRIX_FILE"
   echo "BENCH_PYTHON=$BENCH_PYTHON"
   echo "BENCH_VENV_BIN=$BENCH_VENV_BIN"
+  echo "DDTREE_ROOT=$DDTREE_ROOT"
 } >> "$RUNNER_LOG"
 
 set +e
@@ -34,6 +36,7 @@ set +e
   --gateway-port 8300 \
   --backend-port 8301 \
   --ddtree-port 8316 \
+  --ddtree-root "$DDTREE_ROOT" \
   --start-timeout 1800 \
   --preflight-timeout 1800 \
   --request-timeout 3600 \
