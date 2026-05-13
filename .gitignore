@@ -1,0 +1,13 @@
+.DS_Store
+.env
+.venv/
+.uv-cache/
+__pycache__/
+.pycache/
+*.py[cod]
+.artifacts/
+models/
+*.safetensors
+*.gguf
+*.bin
+*.log

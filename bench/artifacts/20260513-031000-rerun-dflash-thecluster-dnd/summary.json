@@ -1,0 +1,74 @@
+{
+  "created_at": "2026-05-13T03:09:28+0900",
+  "results": [
+    {
+      "engine": "dflash",
+      "candidate": "qwen36_35b_a3b_thecluster",
+      "agent": "aider",
+      "model": "openai/TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit",
+      "target": "TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 213773,
+      "exercise": "dnd-character",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-031000-rerun-dflash-thecluster-dnd/dflash-qwen36_35b_a3b_thecluster/exercises/dnd-character/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-031000-rerun-dflash-thecluster-dnd/dflash-qwen36_35b_a3b_thecluster/exercises/dnd-character/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-031000-rerun-dflash-thecluster-dnd/dflash-qwen36_35b_a3b_thecluster/exercises/dnd-character/output/benchmark-aider-openai-TheCluster-Qwen3.6-35B-A3B-Heretic-MLX-4bit-2026-05-12T18-09-27.json",
+        "summary": {
+          "successRate": 0,
+          "totalDuration": 212069,
+          "avgDuration": 212069,
+          "successCount": 0,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 0,
+          "testFailedCount": 1
+        },
+        "results": [
+          {
+            "exercise": "dnd-character",
+            "agentSuccess": true,
+            "testSuccess": false,
+            "overallSuccess": false,
+            "agentDuration": 203496,
+            "testDuration": 8306,
+            "totalDuration": 212069
+          }
+        ]
+      },
+      "exercise_index": 1,
+      "exercise_count": 1
+    },
+    {
+      "engine": "dflash",
+      "candidate": "qwen36_35b_a3b_thecluster",
+      "model": "TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit",
+      "target": "TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": null,
+      "elapsed_ms": 0,
+      "status": "infra_failed",
+      "reason": "dflash_gateway_crash_circuit_open",
+      "detail": {
+        "http_status": 200,
+        "body": {
+          "state": "failed",
+          "gateway": "http://127.0.0.1:8230",
+          "backend": "http://127.0.0.1:8231",
+          "backend_pid": null,
+          "backend_owned": false,
+          "in_flight": 0,
+          "idle_seconds": 10.412,
+          "idle_timeout_seconds": 300.0,
+          "start_backend": true,
+          "backend_crash_count": 3,
+          "backend_crash_window_seconds": 300.0,
+          "backend_crash_cooldown_remaining_seconds": 1714.938
+        }
+      },
+      "exercise": "dnd-character"
+    }
+  ]
+}

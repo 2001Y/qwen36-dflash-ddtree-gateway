@@ -1,0 +1,45 @@
+{
+  "created_at": "2026-05-13T03:28:54+0900",
+  "results": [
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_youssofal",
+      "agent": "aider",
+      "model": "openai/Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit",
+      "target": "Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 554021,
+      "exercise": "bank-account",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-032500-rerun-ddtree-youssofal-bank-account/ddtree-qwen36_35b_a3b_youssofal/exercises/bank-account/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-032500-rerun-ddtree-youssofal-bank-account/ddtree-qwen36_35b_a3b_youssofal/exercises/bank-account/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-032500-rerun-ddtree-youssofal-bank-account/ddtree-qwen36_35b_a3b_youssofal/exercises/bank-account/output/benchmark-aider-openai-Youssofal-Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit-2026-05-12T18-28-53.json",
+        "summary": {
+          "successRate": 100,
+          "totalDuration": 552418,
+          "avgDuration": 552418,
+          "successCount": 1,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 1,
+          "testFailedCount": 0
+        },
+        "results": [
+          {
+            "exercise": "bank-account",
+            "agentSuccess": true,
+            "testSuccess": true,
+            "overallSuccess": true,
+            "agentDuration": 539220,
+            "testDuration": 13004,
+            "totalDuration": 552418
+          }
+        ]
+      },
+      "exercise_index": 1,
+      "exercise_count": 1
+    }
+  ]
+}

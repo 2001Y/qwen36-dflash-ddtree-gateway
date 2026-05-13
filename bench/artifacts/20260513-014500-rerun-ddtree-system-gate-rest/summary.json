@@ -1,0 +1,974 @@
+{
+  "created_at": "2026-05-13T03:00:37+0900",
+  "results": [
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_youssofal",
+      "agent": "aider",
+      "model": "openai/Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit",
+      "target": "Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 59504,
+      "exercise": "acronym",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_youssofal/exercises/acronym/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_youssofal/exercises/acronym/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_youssofal/exercises/acronym/output/benchmark-aider-openai-Youssofal-Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit-2026-05-12T16-49-05.json",
+        "summary": {
+          "successRate": 0,
+          "totalDuration": 57988,
+          "avgDuration": 57988,
+          "successCount": 0,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 0,
+          "testFailedCount": 1
+        },
+        "results": [
+          {
+            "exercise": "acronym",
+            "agentSuccess": true,
+            "testSuccess": false,
+            "overallSuccess": false,
+            "agentDuration": 46424,
+            "testDuration": 11301,
+            "totalDuration": 57988
+          }
+        ]
+      },
+      "exercise_index": 1,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_youssofal",
+      "agent": "aider",
+      "model": "openai/Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit",
+      "target": "Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 64536,
+      "exercise": "anagram",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_youssofal/exercises/anagram/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_youssofal/exercises/anagram/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_youssofal/exercises/anagram/output/benchmark-aider-openai-Youssofal-Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit-2026-05-12T16-50-09.json",
+        "summary": {
+          "successRate": 100,
+          "totalDuration": 62690,
+          "avgDuration": 62690,
+          "successCount": 1,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 1,
+          "testFailedCount": 0
+        },
+        "results": [
+          {
+            "exercise": "anagram",
+            "agentSuccess": true,
+            "testSuccess": true,
+            "overallSuccess": true,
+            "agentDuration": 51482,
+            "testDuration": 11037,
+            "totalDuration": 62690
+          }
+        ]
+      },
+      "exercise_index": 2,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_youssofal",
+      "agent": "aider",
+      "model": "openai/Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit",
+      "target": "Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 125,
+      "elapsed_ms": 396600,
+      "exercise": "bank-account",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_youssofal/exercises/bank-account/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_youssofal/exercises/bank-account/ts-bench.stderr.log",
+      "status": "infra_failed",
+      "reason": "server_exited_during_ts_bench",
+      "detail": {
+        "pid": 51110,
+        "returncode": -6
+      },
+      "exercise_index": 3,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_froggeric",
+      "agent": "aider",
+      "model": "openai/froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "target": "froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 45415,
+      "exercise": "acronym",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/acronym/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/acronym/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/acronym/output/benchmark-aider-openai-froggeric-Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit-2026-05-12T16-57-38.json",
+        "summary": {
+          "successRate": 0,
+          "totalDuration": 43938,
+          "avgDuration": 43938,
+          "successCount": 0,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 0,
+          "testFailedCount": 1
+        },
+        "results": [
+          {
+            "exercise": "acronym",
+            "agentSuccess": true,
+            "testSuccess": false,
+            "overallSuccess": false,
+            "agentDuration": 32925,
+            "testDuration": 10776,
+            "totalDuration": 43938
+          }
+        ]
+      },
+      "exercise_index": 1,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_froggeric",
+      "agent": "aider",
+      "model": "openai/froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "target": "froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 50473,
+      "exercise": "anagram",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/anagram/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/anagram/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/anagram/output/benchmark-aider-openai-froggeric-Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit-2026-05-12T16-58-28.json",
+        "summary": {
+          "successRate": 100,
+          "totalDuration": 48826,
+          "avgDuration": 48826,
+          "successCount": 1,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 1,
+          "testFailedCount": 0
+        },
+        "results": [
+          {
+            "exercise": "anagram",
+            "agentSuccess": true,
+            "testSuccess": true,
+            "overallSuccess": true,
+            "agentDuration": 38370,
+            "testDuration": 10342,
+            "totalDuration": 48826
+          }
+        ]
+      },
+      "exercise_index": 2,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_froggeric",
+      "agent": "aider",
+      "model": "openai/froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "target": "froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 549163,
+      "exercise": "bank-account",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/bank-account/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/bank-account/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/bank-account/output/benchmark-aider-openai-froggeric-Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit-2026-05-12T17-07-38.json",
+        "summary": {
+          "successRate": 100,
+          "totalDuration": 547905,
+          "avgDuration": 547905,
+          "successCount": 1,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 1,
+          "testFailedCount": 0
+        },
+        "results": [
+          {
+            "exercise": "bank-account",
+            "agentSuccess": true,
+            "testSuccess": true,
+            "overallSuccess": true,
+            "agentDuration": 536603,
+            "testDuration": 11141,
+            "totalDuration": 547905
+          }
+        ]
+      },
+      "exercise_index": 3,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_froggeric",
+      "agent": "aider",
+      "model": "openai/froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "target": "froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 75612,
+      "exercise": "binary-search",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/binary-search/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/binary-search/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/binary-search/output/benchmark-aider-openai-froggeric-Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit-2026-05-12T17-08-53.json",
+        "summary": {
+          "successRate": 100,
+          "totalDuration": 74328,
+          "avgDuration": 74328,
+          "successCount": 1,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 1,
+          "testFailedCount": 0
+        },
+        "results": [
+          {
+            "exercise": "binary-search",
+            "agentSuccess": true,
+            "testSuccess": true,
+            "overallSuccess": true,
+            "agentDuration": 61769,
+            "testDuration": 12344,
+            "totalDuration": 74328
+          }
+        ]
+      },
+      "exercise_index": 4,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_froggeric",
+      "agent": "aider",
+      "model": "openai/froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "target": "froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 67595,
+      "exercise": "binary-search-tree",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/binary-search-tree/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/binary-search-tree/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/binary-search-tree/output/benchmark-aider-openai-froggeric-Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit-2026-05-12T17-10-01.json",
+        "summary": {
+          "successRate": 0,
+          "totalDuration": 66487,
+          "avgDuration": 66487,
+          "successCount": 0,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 0,
+          "testFailedCount": 1
+        },
+        "results": [
+          {
+            "exercise": "binary-search-tree",
+            "agentSuccess": true,
+            "testSuccess": false,
+            "overallSuccess": false,
+            "agentDuration": 58382,
+            "testDuration": 7910,
+            "totalDuration": 66487
+          }
+        ]
+      },
+      "exercise_index": 5,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_froggeric",
+      "agent": "aider",
+      "model": "openai/froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "target": "froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 199797,
+      "exercise": "bowling",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/bowling/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/bowling/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/bowling/output/benchmark-aider-openai-froggeric-Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit-2026-05-12T17-13-21.json",
+        "summary": {
+          "successRate": 0,
+          "totalDuration": 198327,
+          "avgDuration": 198327,
+          "successCount": 0,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 0,
+          "testFailedCount": 1
+        },
+        "results": [
+          {
+            "exercise": "bowling",
+            "agentSuccess": true,
+            "testSuccess": false,
+            "overallSuccess": false,
+            "agentDuration": 186706,
+            "testDuration": 11392,
+            "totalDuration": 198327
+          }
+        ]
+      },
+      "exercise_index": 6,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_froggeric",
+      "agent": "aider",
+      "model": "openai/froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "target": "froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 94790,
+      "exercise": "complex-numbers",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/complex-numbers/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/complex-numbers/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/complex-numbers/output/benchmark-aider-openai-froggeric-Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit-2026-05-12T17-14-55.json",
+        "summary": {
+          "successRate": 0,
+          "totalDuration": 93059,
+          "avgDuration": 93059,
+          "successCount": 0,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 0,
+          "testFailedCount": 1
+        },
+        "results": [
+          {
+            "exercise": "complex-numbers",
+            "agentSuccess": true,
+            "testSuccess": false,
+            "overallSuccess": false,
+            "agentDuration": 82047,
+            "testDuration": 10792,
+            "totalDuration": 93059
+          }
+        ]
+      },
+      "exercise_index": 7,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_froggeric",
+      "agent": "aider",
+      "model": "openai/froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "target": "froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 524461,
+      "exercise": "connect",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/connect/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/connect/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/connect/output/benchmark-aider-openai-froggeric-Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit-2026-05-12T17-23-39.json",
+        "summary": {
+          "successRate": 0,
+          "totalDuration": 522436,
+          "avgDuration": 522436,
+          "successCount": 0,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 0,
+          "testFailedCount": 1
+        },
+        "results": [
+          {
+            "exercise": "connect",
+            "agentSuccess": true,
+            "testSuccess": false,
+            "overallSuccess": false,
+            "agentDuration": 510978,
+            "testDuration": 11291,
+            "totalDuration": 522436
+          }
+        ]
+      },
+      "exercise_index": 8,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_froggeric",
+      "agent": "aider",
+      "model": "openai/froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "target": "froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 60514,
+      "exercise": "crypto-square",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/crypto-square/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/crypto-square/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/crypto-square/output/benchmark-aider-openai-froggeric-Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit-2026-05-12T17-24-40.json",
+        "summary": {
+          "successRate": 100,
+          "totalDuration": 58756,
+          "avgDuration": 58756,
+          "successCount": 1,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 1,
+          "testFailedCount": 0
+        },
+        "results": [
+          {
+            "exercise": "crypto-square",
+            "agentSuccess": true,
+            "testSuccess": true,
+            "overallSuccess": true,
+            "agentDuration": 47988,
+            "testDuration": 10519,
+            "totalDuration": 58756
+          }
+        ]
+      },
+      "exercise_index": 9,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_froggeric",
+      "agent": "aider",
+      "model": "openai/froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "target": "froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 76671,
+      "exercise": "diamond",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/diamond/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/diamond/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/diamond/output/benchmark-aider-openai-froggeric-Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit-2026-05-12T17-25-57.json",
+        "summary": {
+          "successRate": 100,
+          "totalDuration": 75012,
+          "avgDuration": 75012,
+          "successCount": 1,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 1,
+          "testFailedCount": 0
+        },
+        "results": [
+          {
+            "exercise": "diamond",
+            "agentSuccess": true,
+            "testSuccess": true,
+            "overallSuccess": true,
+            "agentDuration": 64080,
+            "testDuration": 10761,
+            "totalDuration": 75012
+          }
+        ]
+      },
+      "exercise_index": 10,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_froggeric",
+      "agent": "aider",
+      "model": "openai/froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "target": "froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 125,
+      "elapsed_ms": 63518,
+      "exercise": "dnd-character",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/dnd-character/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_froggeric/exercises/dnd-character/ts-bench.stderr.log",
+      "status": "infra_failed",
+      "reason": "server_exited_during_ts_bench",
+      "detail": {
+        "pid": 52157,
+        "returncode": -6
+      },
+      "exercise_index": 11,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_vanch007",
+      "agent": "aider",
+      "model": "openai/vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "target": "vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 76673,
+      "exercise": "acronym",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/acronym/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/acronym/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/acronym/output/benchmark-aider-openai-vanch007-Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit-2026-05-12T17-34-01.json",
+        "summary": {
+          "successRate": 0,
+          "totalDuration": 75088,
+          "avgDuration": 75088,
+          "successCount": 0,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 0,
+          "testFailedCount": 1
+        },
+        "results": [
+          {
+            "exercise": "acronym",
+            "agentSuccess": true,
+            "testSuccess": false,
+            "overallSuccess": false,
+            "agentDuration": 63953,
+            "testDuration": 10894,
+            "totalDuration": 75088
+          }
+        ]
+      },
+      "exercise_index": 1,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_vanch007",
+      "agent": "aider",
+      "model": "openai/vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "target": "vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 46410,
+      "exercise": "anagram",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/anagram/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/anagram/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/anagram/output/benchmark-aider-openai-vanch007-Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit-2026-05-12T17-34-48.json",
+        "summary": {
+          "successRate": 100,
+          "totalDuration": 45123,
+          "avgDuration": 45123,
+          "successCount": 1,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 1,
+          "testFailedCount": 0
+        },
+        "results": [
+          {
+            "exercise": "anagram",
+            "agentSuccess": true,
+            "testSuccess": true,
+            "overallSuccess": true,
+            "agentDuration": 34413,
+            "testDuration": 10537,
+            "totalDuration": 45123
+          }
+        ]
+      },
+      "exercise_index": 2,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_vanch007",
+      "agent": "aider",
+      "model": "openai/vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "target": "vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 556979,
+      "exercise": "bank-account",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/bank-account/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/bank-account/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/bank-account/output/benchmark-aider-openai-vanch007-Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit-2026-05-12T17-44-04.json",
+        "summary": {
+          "successRate": 100,
+          "totalDuration": 555294,
+          "avgDuration": 555294,
+          "successCount": 1,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 1,
+          "testFailedCount": 0
+        },
+        "results": [
+          {
+            "exercise": "bank-account",
+            "agentSuccess": true,
+            "testSuccess": true,
+            "overallSuccess": true,
+            "agentDuration": 543775,
+            "testDuration": 11234,
+            "totalDuration": 555294
+          }
+        ]
+      },
+      "exercise_index": 3,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_vanch007",
+      "agent": "aider",
+      "model": "openai/vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "target": "vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 63516,
+      "exercise": "binary-search",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/binary-search/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/binary-search/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/binary-search/output/benchmark-aider-openai-vanch007-Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit-2026-05-12T17-45-08.json",
+        "summary": {
+          "successRate": 100,
+          "totalDuration": 61668,
+          "avgDuration": 61668,
+          "successCount": 1,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 1,
+          "testFailedCount": 0
+        },
+        "results": [
+          {
+            "exercise": "binary-search",
+            "agentSuccess": true,
+            "testSuccess": true,
+            "overallSuccess": true,
+            "agentDuration": 49895,
+            "testDuration": 11528,
+            "totalDuration": 61668
+          }
+        ]
+      },
+      "exercise_index": 4,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_vanch007",
+      "agent": "aider",
+      "model": "openai/vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "target": "vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 54476,
+      "exercise": "binary-search-tree",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/binary-search-tree/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/binary-search-tree/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/binary-search-tree/output/benchmark-aider-openai-vanch007-Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit-2026-05-12T17-46-03.json",
+        "summary": {
+          "successRate": 0,
+          "totalDuration": 53307,
+          "avgDuration": 53307,
+          "successCount": 0,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 0,
+          "testFailedCount": 1
+        },
+        "results": [
+          {
+            "exercise": "binary-search-tree",
+            "agentSuccess": true,
+            "testSuccess": false,
+            "overallSuccess": false,
+            "agentDuration": 45373,
+            "testDuration": 7775,
+            "totalDuration": 53307
+          }
+        ]
+      },
+      "exercise_index": 5,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_vanch007",
+      "agent": "aider",
+      "model": "openai/vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "target": "vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 175521,
+      "exercise": "bowling",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/bowling/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/bowling/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/bowling/output/benchmark-aider-openai-vanch007-Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit-2026-05-12T17-48-57.json",
+        "summary": {
+          "successRate": 0,
+          "totalDuration": 173530,
+          "avgDuration": 173530,
+          "successCount": 0,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 0,
+          "testFailedCount": 1
+        },
+        "results": [
+          {
+            "exercise": "bowling",
+            "agentSuccess": true,
+            "testSuccess": false,
+            "overallSuccess": false,
+            "agentDuration": 162268,
+            "testDuration": 11102,
+            "totalDuration": 173530
+          }
+        ]
+      },
+      "exercise_index": 6,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_vanch007",
+      "agent": "aider",
+      "model": "openai/vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "target": "vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 61581,
+      "exercise": "complex-numbers",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/complex-numbers/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/complex-numbers/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/complex-numbers/output/benchmark-aider-openai-vanch007-Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit-2026-05-12T17-50-00.json",
+        "summary": {
+          "successRate": 0,
+          "totalDuration": 60241,
+          "avgDuration": 60241,
+          "successCount": 0,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 0,
+          "testFailedCount": 1
+        },
+        "results": [
+          {
+            "exercise": "complex-numbers",
+            "agentSuccess": true,
+            "testSuccess": false,
+            "overallSuccess": false,
+            "agentDuration": 51809,
+            "testDuration": 8181,
+            "totalDuration": 60241
+          }
+        ]
+      },
+      "exercise_index": 7,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_vanch007",
+      "agent": "aider",
+      "model": "openai/vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "target": "vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 481358,
+      "exercise": "connect",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/connect/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/connect/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/connect/output/benchmark-aider-openai-vanch007-Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit-2026-05-12T17-58-01.json",
+        "summary": {
+          "successRate": 0,
+          "totalDuration": 479780,
+          "avgDuration": 479780,
+          "successCount": 0,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 0,
+          "testFailedCount": 1
+        },
+        "results": [
+          {
+            "exercise": "connect",
+            "agentSuccess": true,
+            "testSuccess": false,
+            "overallSuccess": false,
+            "agentDuration": 468421,
+            "testDuration": 11204,
+            "totalDuration": 479780
+          }
+        ]
+      },
+      "exercise_index": 8,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_vanch007",
+      "agent": "aider",
+      "model": "openai/vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "target": "vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 44383,
+      "exercise": "crypto-square",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/crypto-square/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/crypto-square/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/crypto-square/output/benchmark-aider-openai-vanch007-Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit-2026-05-12T17-58-46.json",
+        "summary": {
+          "successRate": 100,
+          "totalDuration": 43256,
+          "avgDuration": 43256,
+          "successCount": 1,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 1,
+          "testFailedCount": 0
+        },
+        "results": [
+          {
+            "exercise": "crypto-square",
+            "agentSuccess": true,
+            "testSuccess": true,
+            "overallSuccess": true,
+            "agentDuration": 31353,
+            "testDuration": 11757,
+            "totalDuration": 43256
+          }
+        ]
+      },
+      "exercise_index": 9,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_vanch007",
+      "agent": "aider",
+      "model": "openai/vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "target": "vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 0,
+      "elapsed_ms": 70649,
+      "exercise": "diamond",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/diamond/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/diamond/ts-bench.stderr.log",
+      "ts_bench_output": {
+        "path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/diamond/output/benchmark-aider-openai-vanch007-Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit-2026-05-12T17-59-56.json",
+        "summary": {
+          "successRate": 100,
+          "totalDuration": 69456,
+          "avgDuration": 69456,
+          "successCount": 1,
+          "totalCount": 1,
+          "agentSuccessCount": 1,
+          "testSuccessCount": 1,
+          "testFailedCount": 0
+        },
+        "results": [
+          {
+            "exercise": "diamond",
+            "agentSuccess": true,
+            "testSuccess": true,
+            "overallSuccess": true,
+            "agentDuration": 58778,
+            "testDuration": 10503,
+            "totalDuration": 69456
+          }
+        ]
+      },
+      "exercise_index": 10,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_vanch007",
+      "agent": "aider",
+      "model": "openai/vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "target": "vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": 125,
+      "elapsed_ms": 40369,
+      "exercise": "dnd-character",
+      "exercise_mode": "per-exercise",
+      "stdout_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/dnd-character/ts-bench.stdout.log",
+      "stderr_path": "/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab/.artifacts/dflash/ts-bench-matrix/20260513-014500-rerun-ddtree-system-gate-rest/ddtree-qwen36_35b_a3b_vanch007/exercises/dnd-character/ts-bench.stderr.log",
+      "status": "infra_failed",
+      "reason": "server_exited_during_ts_bench",
+      "detail": {
+        "pid": 56098,
+        "returncode": -6
+      },
+      "exercise_index": 11,
+      "exercise_count": 25
+    },
+    {
+      "engine": "ddtree",
+      "candidate": "qwen36_35b_a3b_nabichan",
+      "model": "nabi-chan/Qwen3.6-35B-A3B-Claude-4.7-Opus-abliterated-MLX-4bit",
+      "target": "nabi-chan/Qwen3.6-35B-A3B-Claude-4.7-Opus-abliterated-MLX-4bit",
+      "draft": "z-lab/Qwen3.6-35B-A3B-DFlash",
+      "returncode": null,
+      "elapsed_ms": 0,
+      "status": "system_gate_failed",
+      "reason": "system_free_percent_below_threshold",
+      "system_gate": {
+        "reason": "system_free_percent_below_threshold",
+        "loadavg": [
+          14.9775390625,
+          10.5048828125,
+          10.6826171875
+        ],
+        "memory_pressure": {
+          "system_free_percent": 24,
+          "raw_error": null
+        }
+      }
+    }
+  ]
+}
