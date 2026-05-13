@@ -36,7 +36,7 @@ ts-bench の有効比較では、`TheCluster + DDTree` が最も良い結果で�
 
 詳細は [bench/docs/tsbench-rankings-20260513.md](bench/docs/tsbench-rankings-20260513.md) を見てください。
 
-Hugging Face download 数のランキングは [bench/docs/hf-download-rankings-20260513.md](bench/docs/hf-download-rankings-20260513.md) に置いています。今回の対象では `Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit` が最大で、`TheCluster` の約 `9.97x` です。ただし追加ベンチでは、download 数最大の `Youssofal` はまだ `TheCluster + DDTree` を上回っていません。
+Hugging Face download 数のランキングは [bench/docs/hf-download-rankings-20260513.md](bench/docs/hf-download-rankings-20260513.md) に置いています。今回の対象では `Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit` が最大で、`TheCluster` の約 `9.97x` です。ただし追加ベンチでは、download 数最大の `Youssofal` は `DDTree` で `23/25` まで有効通常結果を取り、`6/25` 成功に留まったため、`TheCluster + DDTree` を上回っていません。
 
 ## 必要なもの
 
@@ -72,7 +72,7 @@ DFLASH_MODEL=Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit
 DFLASH_DRAFT=z-lab/Qwen3.6-35B-A3B-DFlash
 ```
 
-Youssofal でも 35B-A3B / MLX / 4bit / Heretic 系なので、同じ DFlash draft を明示して DFlash / DDTree 経路で起動できます。ただし手元ベンチでは `DFlash + Youssofal` は `4/25`、`DDTree + Youssofal` は `19/25` まで有効で `6/25` 成功の部分評価です。総合採用判断ではまだ TheCluster を上位にしています。
+Youssofal でも 35B-A3B / MLX / 4bit / Heretic 系なので、同じ DFlash draft を明示して DFlash / DDTree 経路で起動できます。ただし手元ベンチでは `DFlash + Youssofal` は `4/25`、`DDTree + Youssofal` は `23/25` まで有効で `6/25` 成功です。TOP_25 枠は分類完了済みで、総合採用判断ではまだ TheCluster を上位にしています。
 
 仮想環境を作り、DFlash と DDTree 実験実装を入れます。
 
@@ -230,7 +230,7 @@ DFLASH_PREFIX_CACHE_L2_MAX_BYTES=53687091200
 - 完走状態: TOP_25 を完全完走した組み合わせはなし
 - 主結果: `TheCluster + DDTree` が有効 10 exercise で `7/10` 成功
 - 参考結果: `DFlash + Youssofal` は `12/25` まで有効、`4/25` 成功
-- 参考結果: `DDTree + Youssofal` は `19/25` まで有効、`6/25` 成功。rest2 invalid の残り 4 件を再実行中
+- 参考結果: `DDTree + Youssofal` は `23/25` まで有効、`6/25` 成功。TOP_25 枠は分類完了
 
 ## 注意点
 

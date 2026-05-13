@@ -40,9 +40,22 @@
 - 症状: `ts-bench` 復旧後の `20260513-142940-youssofal-ddtree-rest2-per-exercise` は、`exercism-typescript` submodule 復元前に前半 exercise が `ENOENT: exercism-typescript/exercises/practice` で即終了した。
 - 対応: `dflash-mlx` は既存成功 commit `20d68db3b3c0ae3dd6d3a2f0d3c10b2344ee514e` で venv を再作成し、`ts-bench` は `laiso/ts-bench` の `v1-final` を `/private/tmp/ts-bench` に復元、`git submodule update --init --recursive` で `exercism-typescript` を復元した。
 - 修正: DDTree root は `/private/tmp/ddtree-mlx` ではなく repo 内の `_release/qwen36-dflash-ddtree-gateway/bench/ddtree-mlx` を使うように runner を変更した。
-- 現状: `20260513-142940-youssofal-ddtree-rest2-per-exercise` は完了。`spiral-matrix`, `transpose`, `two-bucket`, `variable-length-quantity`, `wordy` は通常失敗として反映した。`20260513-162247-youssofal-ddtree-rest2-invalid-rerun-per-exercise` では `house`, `pascals-triangle`, `rational-numbers` が通常失敗、`react` が実行中。
+- 現状: `20260513-142940-youssofal-ddtree-rest2-per-exercise` は完了。`spiral-matrix`, `transpose`, `two-bucket`, `variable-length-quantity`, `wordy` は通常失敗として反映した。submodule 復元前に無効化された `house`, `pascals-triangle`, `rational-numbers`, `react`, `rectangles`, `relative-distance`, `robot-name` は `20260513-162247-youssofal-ddtree-rest2-invalid-rerun-per-exercise` で再実行し、すべて通常失敗として確定した。
 
-## 6. 現時点の採用判断
+## 6. Youssofal DDTree TOP_25 最終分類
+
+- 正本 artifact: `.artifacts/dflash/ts-bench-matrix/20260513-124434-youssofal-ddtree-top25-continuation/`, `.artifacts/dflash/ts-bench-matrix/20260513-125348-youssofal-ddtree-rest-per-exercise/`, `.artifacts/dflash/ts-bench-matrix/20260513-142940-youssofal-ddtree-rest2-per-exercise/`, `.artifacts/dflash/ts-bench-matrix/20260513-162247-youssofal-ddtree-rest2-invalid-rerun-per-exercise/`
+- 通常成功: `6/25`。`anagram`, `binary-search`, `complex-numbers`, `crypto-square`, `diamond`, `flatten-array`
+- 通常失敗: `17/25`。`acronym`, `bank-account`, `binary-search-tree`, `bowling`, `food-chain`, `house`, `pascals-triangle`, `rational-numbers`, `react`, `rectangles`, `relative-distance`, `robot-name`, `spiral-matrix`, `transpose`, `two-bucket`, `variable-length-quantity`, `wordy`
+- infra failure: `2/25`。`connect`, `dnd-character`
+- TOP_25 Score: `6/25 = 24.0%`
+- Valid-only Score: `6/23 = 26.1%`
+- 有効通常結果の合計時間: `4937.4s`
+- 有効通常結果の平均時間: `214.7s`
+- 成功効率: `822.9s / success`
+- 残り再実行対象: なし
+
+## 7. 現時点の採用判断
 
 - download 数最大は `Youssofal`。
 - ただし追加計測時点では `TheCluster + DDTree` の ts-bench 成績を上回っていない。
