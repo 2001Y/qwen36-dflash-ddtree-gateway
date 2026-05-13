@@ -9,6 +9,21 @@
 - 速度の主指標: 有効通常結果の平均 `totalDuration`。低いほど速い。
 - download 数: Hugging Face API `https://huggingface.co/api/models/{repo_id}` を 2026-05-13 17:39 JST に再取得。
 - `20260513-142940` の submodule 復元前 invalid 結果はランキングから除外し、`20260513-162247` の invalid rerun で置き換える。
+- `DFlash + froggeric`, `DFlash + vanch007`, `DFlash + nabi-chan` は未評価なので、比較済みランキングには入れない。
+
+## 0. 比較済み全組み合わせ
+
+精度を第一キー、同率なら平均時間を第二キーとして並び替える。
+
+| 順位 | 組み合わせ | target model | TOP_25 Score | 通常成功 | 平均時間 | downloads | 備考 |
+| ---: | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 1 | `DDTree + TheCluster` | `TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit` | `28.0%` | `7/25` | `179.4s` | `2,241` | 総合採用候補 |
+| 2 | `DDTree + Youssofal` | `Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit` | `24.0%` | `6/25` | `214.7s` | `22,901` | download 数最大。TOP_25 枠分類済み |
+| 3 | `DFlash + TheCluster` | `TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit` | `20.0%` | `5/25` | `149.0s` | `2,241` | 通常 DFlash の実用比較基準 |
+| 4 | `DDTree + vanch007` | `vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit` | `20.0%` | `5/25` | `161.7s` | `1,651` | 同率内では froggeric より速い |
+| 5 | `DDTree + froggeric` | `froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit` | `20.0%` | `5/25` | `172.9s` | `3,639` | download 数は TheCluster より多い |
+| 6 | `DFlash + Youssofal` | `Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit` | `16.0%` | `4/25` | `130.9s` | `22,901` | raw speed は最速だが crash 後結果を含む |
+| 7 | `DDTree + nabi-chan` | `nabi-chan/Qwen3.6-35B-A3B-Claude-4.7-Opus-abliterated-MLX-4bit` | `16.0%` | `4/25` | `155.0s` | `1,192` | tokenizer warning あり |
 
 ## 1. 精度ランキング
 
@@ -77,4 +92,3 @@ TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit
 + z-lab/Qwen3.6-35B-A3B-DFlash
 + DDTree
 ```
-
