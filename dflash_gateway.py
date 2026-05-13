@@ -298,7 +298,7 @@ class GatewayConfig:
             backend_command=backend_command,
             start_backend=read_bool("DFLASH_GATEWAY_START_BACKEND", True),
             start_timeout_s=read_float("DFLASH_GATEWAY_START_TIMEOUT", 900.0),
-            idle_timeout_s=read_float("DFLASH_GATEWAY_IDLE_SECONDS", 30.0),
+            idle_timeout_s=read_float("DFLASH_GATEWAY_IDLE_SECONDS", 1800.0),
             shutdown_grace_s=read_float("DFLASH_GATEWAY_SHUTDOWN_GRACE", 30.0),
             request_timeout_s=read_float("DFLASH_GATEWAY_REQUEST_TIMEOUT", 3600.0),
             ready_timeout_s=read_float("DFLASH_GATEWAY_READY_TIMEOUT", 3.0),
