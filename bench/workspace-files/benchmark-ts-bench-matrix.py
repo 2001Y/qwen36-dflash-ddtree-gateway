@@ -20,7 +20,9 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent
 TS_BENCH_ROOT = Path("/private/tmp/ts-bench")
-ENGINE_MATRIX_FILE = ROOT / "benchmark-engine-matrix.py"
+ENGINE_MATRIX_FILE = Path(
+    os.environ.get("BENCHMARK_ENGINE_MATRIX_FILE", str(ROOT / "benchmark-engine-matrix.py"))
+)
 ARTIFACT_ROOT = ROOT / ".artifacts" / "dflash" / "ts-bench-matrix"
 TOP_25_EXERCISES = [
     "acronym",

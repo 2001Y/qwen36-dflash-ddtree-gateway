@@ -36,6 +36,8 @@ ts-bench の有効比較では、`TheCluster + DDTree` が最も良い結果で�
 
 詳細は [bench/docs/tsbench-rankings-20260513.md](bench/docs/tsbench-rankings-20260513.md) を見てください。
 
+Hugging Face download 数のランキングは [bench/docs/hf-download-rankings-20260513.md](bench/docs/hf-download-rankings-20260513.md) に置いています。今回の対象では `Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit` が最大で、`TheCluster` の約 `9.97x` です。
+
 ## 必要なもの
 
 - Apple Silicon Mac
@@ -215,6 +217,7 @@ DFLASH_PREFIX_CACHE_L2_MAX_BYTES=50GB
 - [bench/workspace-files](bench/workspace-files): 元ワークスペースからコピーした起動スクリプトと ts-bench matrix runner
 - [bench/ddtree-mlx](bench/ddtree-mlx): このマシンで手を入れた DDTree 実験実装
 - [bench/docs](bench/docs): ts-bench ランキング
+- [bench/docs/hf-download-rankings-20260513.md](bench/docs/hf-download-rankings-20260513.md): 対象モデルの Hugging Face download 数ランキング
 - [bench/artifacts](bench/artifacts): 主要 `summary.json`
 
 巨大な `results.jsonl`、model cache、`.venv`、`.uv-cache` は含めていません。

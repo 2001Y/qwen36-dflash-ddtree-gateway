@@ -6,6 +6,8 @@
 
 - `workspace-files/`
   - `benchmark-ts-bench-matrix.py`
+  - `benchmark-engine-matrix-local.py`
+  - `run-youssofal-top25-bench-20260513.sh`
   - `start-dflash.command`
   - `start-dflash-backend.command`
   - `start-dflash-gateway.command`
@@ -14,6 +16,7 @@
   - `tests/test_dflash_compat.py` などのテストを含む
 - `docs/`
   - `tsbench-rankings-20260513.md`
+  - `hf-download-rankings-20260513.md`
 - `artifacts/`
   - 主要な `summary.json`
 
