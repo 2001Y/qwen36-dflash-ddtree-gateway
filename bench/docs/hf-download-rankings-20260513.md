@@ -8,7 +8,7 @@ Qwen3.6 35B-A3B / MLX / 4bit / 脱獄系として、今回の ts-bench 対象に
 
 | 順位 | モデル | downloads | likes | gated | private | 手元ベンチ状態 |
 | ---: | --- | ---: | ---: | --- | --- | --- |
-| 1 | `Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit` | `21,866` | `16` | `false` | `false` | `DFlash` は `12/25` まで有効、`4/25` 成功。`DDTree` は `13/25` まで有効、`6/25` 成功。rest2 は `two-bucket` 進行中で、submodule 復元前の 7 件は再実行対象 |
+| 1 | `Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit` | `21,866` | `16` | `false` | `false` | `DFlash` は `12/25` まで有効、`4/25` 成功。`DDTree` は `19/25` まで有効、`6/25` 成功。submodule 復元前の残り 4 件を再実行中 |
 | 2 | `froggeric/Qwen3.6-35B-A3B-Uncensored-Heretic-MLX-4bit` | `3,386` | `1` | `false` | `false` | `DDTree` 有効 `10/25` |
 | 3 | `TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit` | `2,193` | `3` | `false` | `false` | 現時点の ts-bench 最良 |
 | 4 | `vanch007/Huihui-Qwen3.6-35B-A3B-abliterated-mlx-4bit` | `1,629` | `1` | `false` | `false` | `DDTree` 有効 `10/25` |
@@ -19,4 +19,4 @@ Qwen3.6 35B-A3B / MLX / 4bit / 脱獄系として、今回の ts-bench 対象に
 - download 数では `Youssofal` が最大です。`TheCluster` の約 `9.97x` です。
 - ただし手元 ts-bench の現時点成績では `TheCluster + DDTree` が最良です。
 - `Youssofal` は download 数と非 gated という導入性が強いが、追加ベンチではまだ `TheCluster + DDTree` を上回っていません。
-- `DFlash + Youssofal` は `4/25`、`DDTree + Youssofal` は `6/25` まで確定。DDTree は `spiral-matrix` と `transpose` まで通常完了し、`two-bucket` を 1 exercise = 1 server で実行中です。
+- `DFlash + Youssofal` は `4/25`、`DDTree + Youssofal` は `6/25` まで確定。DDTree は `rational-numbers` まで通常完了し、submodule 復元前に無効化された残り 4 件を 1 exercise = 1 server で再実行中です。

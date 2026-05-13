@@ -17,7 +17,8 @@
 - `.artifacts/dflash/ts-bench-matrix/20260513-125348-youssofal-ddtree-rest-per-exercise/`
 - `.artifacts/dflash/ts-bench-matrix/20260513-142120-youssofal-ddtree-rest2-per-exercise/` は `/private/tmp/mlx-dflash-bench-venv` 消失による infra failure。
 - `.artifacts/dflash/ts-bench-matrix/20260513-142638-youssofal-ddtree-rest2-per-exercise/` は `/private/tmp/ts-bench` 消失による infra failure。
-- `.artifacts/dflash/ts-bench-matrix/20260513-142940-youssofal-ddtree-rest2-per-exercise/` は `exercism-typescript` submodule 復元前の前半結果を含む。`spiral-matrix` と `transpose` は通常完了として反映し、`house` から `robot-name` までは無効分として完了後に再実行する。
+- `.artifacts/dflash/ts-bench-matrix/20260513-142940-youssofal-ddtree-rest2-per-exercise/` は `exercism-typescript` submodule 復元前の前半結果を含む。`spiral-matrix`, `transpose`, `two-bucket`, `variable-length-quantity`, `wordy` は通常完了として反映し、`house` から `robot-name` までは無効分として再実行する。
+- `.artifacts/dflash/ts-bench-matrix/20260513-162247-youssofal-ddtree-rest2-invalid-rerun-per-exercise/` は submodule 復元前に無効化された 7 exercise の再実行 artifact。
 
 集計ルール:
 
@@ -48,15 +49,15 @@
 
 - artifact: `.artifacts/dflash/ts-bench-matrix/20260513-124434-youssofal-ddtree-top25-continuation/`
 - rest artifact: `.artifacts/dflash/ts-bench-matrix/20260513-125348-youssofal-ddtree-rest-per-exercise/`
-- 有効通常結果: `13/25`
-- 通常成功: `6/13`
+- 有効通常結果: `19/25`
+- 通常成功: `6/19`
 - TOP_25 Score: `24.0%`
-- Valid-only Score: `46.2%`
+- Valid-only Score: `31.6%`
 - 成功: `anagram`, `binary-search`, `complex-numbers`, `crypto-square`, `diamond`, `flatten-array`
-- 通常失敗: `acronym`, `bank-account`, `binary-search-tree`, `bowling`, `food-chain`, `spiral-matrix`, `transpose`
+- 通常失敗: `acronym`, `bank-account`, `binary-search-tree`, `bowling`, `food-chain`, `house`, `pascals-triangle`, `rational-numbers`, `spiral-matrix`, `transpose`, `two-bucket`, `variable-length-quantity`, `wordy`
 - infra failure: rest-per-exercise の `connect`, `dnd-character` は server returncode `-6`。initial run の `bank-account` でも server exit があったが、rest-per-exercise の `bank-account` は 918.3s の通常失敗として確定。
 - 補足: `food-chain` は ts-bench output JSON から復元した。harness 親プロセスが結果 JSONL 追記前に消え、DDTree server PID `18504` が orphan になったため停止した。`house` 以降は rest2 で継続予定。
-- rest2 補足: `/private/tmp` 配下の venv / ts-bench checkout が消えていたため、`20260513-142120` と `20260513-142638` は infra artifact として保存。venv、`ts-bench v1-final`、`exercism-typescript` submodule を復元した。`20260513-142940` は `spiral-matrix` と `transpose` が通常失敗、`two-bucket` が進行中。`house`, `pascals-triangle`, `rational-numbers`, `react`, `rectangles`, `relative-distance`, `robot-name` は submodule 復元前の `ENOENT` のため再実行対象。
+- rest2 補足: `/private/tmp` 配下の venv / ts-bench checkout が消えていたため、`20260513-142120` と `20260513-142638` は infra artifact として保存。venv、`ts-bench v1-final`、`exercism-typescript` submodule を復元した。`20260513-142940` は後半 5 件がすべて通常失敗。`20260513-162247` では `house`, `pascals-triangle`, `rational-numbers` が通常失敗、`react` が進行中。
 
 現時点では、download 数が最大でも `Youssofal` は `TheCluster + DDTree` を上回っていない。精度主指標では引き続き `TheCluster + DDTree` が第一候補。
 
@@ -181,7 +182,7 @@ DDTree は DFlash と別物として単独比較しているわけではあり�
 | `DFlash + vanch007` | 未評価 | `0/25` | `0` | `0` | `0` | DFlash engine abort 後のため未実行 |
 | `DFlash + nabi-chan` | 未評価 | `0/25` | `0` | `0` | `0` | DFlash engine abort 後のため未実行 |
 | `DDTree + TheCluster` | crash 前まで有効 | `10/25` | `7` | `3` | `1` | `dnd-character` で server exit |
-| `DDTree + Youssofal` | 部分評価中 | `13/25` | `6` | `7` | `2` | `connect` / `dnd-character` で server exit。rest2 の invalid 7 件は再実行対象 |
+| `DDTree + Youssofal` | 部分評価中 | `19/25` | `6` | `13` | `2` | `connect` / `dnd-character` で server exit。rest2 の invalid 4 件を再実行中 |
 | `DDTree + froggeric` | crash 前まで有効 | `10/25` | `5` | `5` | `1` | `dnd-character` で server exit |
 | `DDTree + vanch007` | crash 前まで有効 | `10/25` | `5` | `5` | `1` | `dnd-character` で server exit |
 | `DDTree + nabi-chan` | crash 前まで有効 | `10/25` | `4` | `6` | `1` | tokenizer warning あり |
@@ -205,7 +206,7 @@ DDTree は DFlash と別物として単独比較しているわけではあり�
 | 2 | `DDTree + vanch007` | `20.0%` | `5/25` | `10` | `5` | `1` | `14` |
 | 5 | `DDTree + nabi-chan` | `16.0%` | `4/25` | `10` | `6` | `1` | `14` |
 | 参考 | `DFlash + Youssofal` | `16.0%` | `4/25` | `12` | `8` | `1` | `12` |
-| 参考 | `DDTree + Youssofal` | `24.0%` | `6/25` | `13` | `7` | `2` | `10` |
+| 参考 | `DDTree + Youssofal` | `24.0%` | `6/25` | `19` | `13` | `2` | `4` |
 | 未評価 | `DFlash + froggeric` | N/A | N/A | `0` | `0` | `0` | N/A |
 | 未評価 | `DFlash + vanch007` | N/A | N/A | `0` | `0` | `0` | N/A |
 | 未評価 | `DFlash + nabi-chan` | N/A | N/A | `0` | `0` | `0` | N/A |
@@ -220,7 +221,7 @@ DDTree は DFlash と別物として単独比較しているわけではあり�
 | 3 | `DFlash + TheCluster` | `50.0%` | `5/10` | 速度は最速 |
 | 3 | `DDTree + froggeric` | `50.0%` | `5/10` | 同率 |
 | 3 | `DDTree + vanch007` | `50.0%` | `5/10` | 同率 |
-| 参考 | `DDTree + Youssofal` | `46.2%` | `6/13` | `food-chain` は output JSON から復元。rest2 は進行中 |
+| 参考 | `DDTree + Youssofal` | `31.6%` | `6/19` | `food-chain` は output JSON から復元。invalid 4 件を再実行中 |
 | 6 | `DDTree + nabi-chan` | `40.0%` | `4/10` | tokenizer warning あり |
 | 参考 | `DFlash + Youssofal` | `33.3%` | `4/12` | crash 後結果を含むため低信頼 |
 
@@ -233,7 +234,7 @@ DDTree は DFlash と別物として単独比較しているわけではあり�
 | 3 | `DDTree + vanch007` | `10` | `161.7s` | `1616.7s` | `5` |
 | 4 | `DDTree + froggeric` | `10` | `172.9s` | `1729.1s` | `5` |
 | 5 | `DDTree + TheCluster` | `10` | `179.4s` | `1794.0s` | `7` |
-| 参考 | `DDTree + Youssofal` | `13` | `215.9s` | `2806.6s` | `6` |
+| 参考 | `DDTree + Youssofal` | `19` | `203.2s` | `3860.6s` | `6` |
 | 参考 | `DFlash + Youssofal` | `12` | `130.9s` | `1570.6s` | `4` |
 
 速度だけでは `DFlash + TheCluster` が最速。ただし成功数は `DDTree + TheCluster` が `1.40x` 上。
@@ -247,7 +248,7 @@ DDTree は DFlash と別物として単独比較しているわけではあり�
 | 3 | `DDTree + vanch007` | `323.3s` | `5` | `1616.7s` |
 | 4 | `DDTree + froggeric` | `345.8s` | `5` | `1729.1s` |
 | 5 | `DDTree + nabi-chan` | `387.4s` | `4` | `1549.6s` |
-| 参考 | `DDTree + Youssofal` | `467.8s` | `6` | `2806.6s` |
+| 参考 | `DDTree + Youssofal` | `643.4s` | `6` | `3860.6s` |
 | 参考 | `DFlash + Youssofal` | `392.6s` | `4` | `1570.6s` |
 
 ## 9. 失敗テストケース一覧
@@ -290,11 +291,10 @@ DDTree は DFlash と別物として単独比較しているわけではあり�
 ### `DDTree + Youssofal`
 
 - 成功: `anagram`, `binary-search`, `complex-numbers`, `crypto-square`, `diamond`, `flatten-array`
-- 通常失敗: `acronym`, `bank-account`, `binary-search-tree`, `bowling`, `food-chain`, `spiral-matrix`, `transpose`
+- 通常失敗: `acronym`, `bank-account`, `binary-search-tree`, `bowling`, `food-chain`, `house`, `pascals-triangle`, `rational-numbers`, `spiral-matrix`, `transpose`, `two-bucket`, `variable-length-quantity`, `wordy`
 - infra failure: rest-per-exercise の `connect`, `dnd-character` -> `server_exited_during_ts_bench`
-- 再実行対象: `house`, `pascals-triangle`, `rational-numbers`, `react`, `rectangles`, `relative-distance`, `robot-name`。`20260513-142940` の前半は submodule 復元前の `ENOENT`。
-- 進行中: `two-bucket`
-- 未到達: `variable-length-quantity`, `wordy`
+- 再実行対象: `react`, `rectangles`, `relative-distance`, `robot-name`。`20260513-142940` の前半は submodule 復元前の `ENOENT`。
+- 進行中: `react`。artifact は `20260513-162247-youssofal-ddtree-rest2-invalid-rerun-per-exercise`。
 
 ### `DFlash + Youssofal`
 

@@ -72,7 +72,7 @@ DFLASH_MODEL=Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit
 DFLASH_DRAFT=z-lab/Qwen3.6-35B-A3B-DFlash
 ```
 
-Youssofal でも 35B-A3B / MLX / 4bit / Heretic 系なので、同じ DFlash draft を明示して DFlash / DDTree 経路で起動できます。ただし手元ベンチでは `DFlash + Youssofal` は `4/25`、`DDTree + Youssofal` は `13/25` まで有効で `6/25` 成功の部分評価です。総合採用判断ではまだ TheCluster を上位にしています。
+Youssofal でも 35B-A3B / MLX / 4bit / Heretic 系なので、同じ DFlash draft を明示して DFlash / DDTree 経路で起動できます。ただし手元ベンチでは `DFlash + Youssofal` は `4/25`、`DDTree + Youssofal` は `19/25` まで有効で `6/25` 成功の部分評価です。総合採用判断ではまだ TheCluster を上位にしています。
 
 仮想環境を作り、DFlash と DDTree 実験実装を入れます。
 
@@ -230,7 +230,7 @@ DFLASH_PREFIX_CACHE_L2_MAX_BYTES=53687091200
 - 完走状態: TOP_25 を完全完走した組み合わせはなし
 - 主結果: `TheCluster + DDTree` が有効 10 exercise で `7/10` 成功
 - 参考結果: `DFlash + Youssofal` は `12/25` まで有効、`4/25` 成功
-- 参考結果: `DDTree + Youssofal` は `13/25` まで有効、`6/25` 成功。rest2 は継続中で invalid 7 件は再実行対象
+- 参考結果: `DDTree + Youssofal` は `19/25` まで有効、`6/25` 成功。rest2 invalid の残り 4 件を再実行中
 
 ## 注意点
 
