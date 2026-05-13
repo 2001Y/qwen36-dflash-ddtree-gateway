@@ -5,6 +5,7 @@ Apple Silicon Mac で、`TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit` を DFlash
 このリポジトリは次を含みます。
 
 - DFlash backend をオンデマンド起動し、未使用 5 分で停止する OpenAI 互換 gateway
+- local cache 上の DFlash 対応 model を `/v1/models` に出し、request の `model` に応じて backend を切り替える gateway
 - 現行の TheCluster + `z-lab/Qwen3.6-35B-A3B-DFlash` 標準設定
 - DDTree 実験実装のコピー
 - ts-bench 比較で使ったスクリプト、ランキング、主要 summary artifact
@@ -102,6 +103,15 @@ brew install uv
 
 gateway は `http://127.0.0.1:8000` で待ち受けます。backend は最初の生成リクエスト時に `http://127.0.0.1:8001` で起動されます。
 
+`GET /v1/models` は backend を起動せず、ローカル Hugging Face cache に存在する DFlash 対応 target model を返します。標準では次のような Qwen3.6 35B-A3B target を検出し、同じ draft `z-lab/Qwen3.6-35B-A3B-DFlash` に紐づけます。
+
+```text
+TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit
+Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit
+```
+
+Jan や OpenAI 互換クライアントで model を切り替えると、gateway は request body の `model` を読み、現在の backend が別 model なら停止してから指定 model で起動し直します。DFlash backend 自体は 1 process 1 target/draft なので、この切替は gateway 側で管理します。
+
 ```text
 client
   -> http://127.0.0.1:8000/v1/chat/completions
@@ -112,6 +122,8 @@ client
 ```
 
 最初の 1 回は、モデルのダウンロードまたはメモリロードで長く待ちます。gateway は backend が `/v1/models` を返すまで待ってから request を転送します。
+
+MLX は Metal GPU を使うため、macOS の通常ユーザーセッションから起動してください。headless / sandboxed な実行環境から backend を起動すると `No Metal device available` で失敗することがあります。
 
 OpenAI 互換クライアントには次を設定します。
 
