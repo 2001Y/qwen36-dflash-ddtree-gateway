@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import contextlib
+import copy
 import dataclasses
 import http.client
 import http.server
@@ -19,6 +21,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
+
+DEFAULT_VLM_PROMPT = """Analyze the attached image(s) for a coding/tool agent.
+Return concise structured notes in Japanese:
+- visible text/OCR, error messages, code snippets, and UI labels
+- UI layout, visual state, selected controls, and important spatial relationships
+- details relevant to debugging, implementation, testing, or tool use
+- uncertainties if something is not readable
+Do not invent missing details."""
 
 HOP_BY_HOP_HEADERS = {
     "connection",
@@ -133,6 +143,8 @@ def hf_hub_cache_root() -> Path:
 def infer_draft_model(model_id: str) -> str | None:
     lowered = model_id.lower()
     if "dflash" in lowered:
+        return None
+    if "mxfp4" in lowered or "nvfp4" in lowered:
         return None
     if "qwen3.6-35b-a3b" in lowered:
         return "z-lab/Qwen3.6-35B-A3B-DFlash"
@@ -297,6 +309,15 @@ class GatewayConfig:
     crash_cooldown_s: float
     default_chat_max_tokens: int
     force_disable_thinking: bool
+    vlm_enabled: bool
+    vlm_model: str
+    vlm_python: Path
+    vlm_summarizer: Path
+    vlm_timeout_s: float
+    vlm_max_tokens: int
+    vlm_temperature: float
+    vlm_prompt: str
+    vlm_input_dir: Path
     log_path: Path
     backend_log_path: Path
 
@@ -348,6 +369,17 @@ class GatewayConfig:
             crash_cooldown_s=read_float("DFLASH_GATEWAY_CRASH_COOLDOWN_SECONDS", 1800.0),
             default_chat_max_tokens=read_int("DFLASH_GATEWAY_DEFAULT_CHAT_MAX_TOKENS", 4096),
             force_disable_thinking=read_bool("DFLASH_GATEWAY_FORCE_DISABLE_THINKING", True),
+            vlm_enabled=read_bool("DFLASH_VLM_ENABLED", True),
+            vlm_model=os.environ.get("DFLASH_VLM_MODEL", "mlx-community/Qwen3.6-35B-A3B-nvfp4"),
+            vlm_python=Path(os.environ.get("DFLASH_VLM_PYTHON", str(workspace / ".venv/bin/python"))).expanduser(),
+            vlm_summarizer=Path(os.environ.get("DFLASH_VLM_SUMMARIZER", str(workspace / "vlm_image_summarizer.py"))).expanduser(),
+            vlm_timeout_s=read_float("DFLASH_VLM_TIMEOUT", 900.0),
+            vlm_max_tokens=read_int("DFLASH_VLM_MAX_TOKENS", 768),
+            vlm_temperature=read_float("DFLASH_VLM_TEMPERATURE", 0.0),
+            vlm_prompt=os.environ.get("DFLASH_VLM_PROMPT", DEFAULT_VLM_PROMPT),
+            vlm_input_dir=Path(
+                os.environ.get("DFLASH_VLM_INPUT_DIR", str(workspace / ".artifacts/dflash/vlm-inputs"))
+            ).expanduser(),
             log_path=log_path,
             backend_log_path=backend_log_path,
         )
@@ -423,6 +455,8 @@ class BackendManager:
                 "idle_seconds": last_idle_s,
                 "idle_timeout_seconds": self.config.idle_timeout_s,
                 "start_backend": self.config.start_backend,
+                "vlm_enabled": self.config.vlm_enabled,
+                "vlm_model": self.config.vlm_model,
                 "backend_crash_count": len(self.crash_times),
                 "backend_crash_window_seconds": self.config.crash_window_s,
                 "backend_crash_cooldown_remaining_seconds": cooldown_remaining_s,
@@ -941,6 +975,12 @@ class GatewayHandler(http.server.BaseHTTPRequestHandler):
             )
             request_bytes = self._content_length()
             body = self.rfile.read(request_bytes) if request_bytes > 0 else None
+            body = self._prepare_multimodal_request(
+                request_id=request_id,
+                route=route,
+                content_type=self.headers.get("Content-Type", ""),
+                body=body,
+            )
             if route == "/metrics":
                 if not self.manager.backend_is_ready():
                     raise GatewayError(503, "Backend metrics unavailable because backend is not ready")
@@ -977,6 +1017,268 @@ class GatewayHandler(http.server.BaseHTTPRequestHandler):
                 status=response_status,
                 duration_ms=duration_ms,
             )
+
+    def _prepare_multimodal_request(
+        self,
+        request_id: str,
+        route: str,
+        content_type: str,
+        body: bytes | None,
+    ) -> bytes | None:
+        if route not in {"/v1/chat/completions", "/v1/responses"}:
+            return body
+        if body is None or "application/json" not in content_type.lower():
+            return body
+
+        try:
+            payload = json.loads(body)
+        except json.JSONDecodeError:
+            return body
+        if not isinstance(payload, dict):
+            return body
+
+        image_refs = self._image_refs_from_payload(route, payload)
+        if not image_refs:
+            return body
+        if not self.config.vlm_enabled:
+            raise GatewayError(400, "Image input was provided but DFLASH_VLM_ENABLED is disabled")
+
+        request_text = self._text_from_payload(payload)
+        self.logger.write(
+            "INFO",
+            "vlm_preprocess_start",
+            request_id=request_id,
+            model=self.config.vlm_model,
+            image_count=len(image_refs),
+            request_text_chars=len(request_text),
+        )
+        self.manager.stop_backend(reason="vlm_preprocess", force=True)
+        images = self._materialize_image_refs(request_id, image_refs)
+        summary = self._run_vlm_summary(request_id, images, request_text)
+
+        rewritten_payload = copy.deepcopy(payload)
+        rewritten_payload = self._drop_image_parts(route, rewritten_payload)
+        self._append_vision_summary(route, rewritten_payload, summary)
+        rewritten = json.dumps(rewritten_payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        self.logger.write(
+            "SUCCESS",
+            "vlm_preprocess_end",
+            request_id=request_id,
+            model=self.config.vlm_model,
+            image_count=len(images),
+            summary_chars=len(summary),
+            original_bytes=len(body),
+            rewritten_bytes=len(rewritten),
+        )
+        return rewritten
+
+    def _image_refs_from_payload(self, route: str, payload: dict[str, object]) -> list[str]:
+        refs: list[str] = []
+        if route == "/v1/chat/completions":
+            messages = payload.get("messages")
+            if isinstance(messages, list):
+                for message in messages:
+                    if isinstance(message, dict):
+                        refs.extend(self._image_refs_from_content(message.get("content")))
+            return refs
+
+        response_input = payload.get("input")
+        if isinstance(response_input, list):
+            for item in response_input:
+                if isinstance(item, dict):
+                    refs.extend(self._image_refs_from_content(item.get("content")))
+                else:
+                    refs.extend(self._image_refs_from_content(item))
+        elif isinstance(response_input, dict):
+            refs.extend(self._image_refs_from_content(response_input.get("content")))
+        return refs
+
+    def _image_refs_from_content(self, content: object) -> list[str]:
+        if isinstance(content, list):
+            refs: list[str] = []
+            for item in content:
+                refs.extend(self._image_refs_from_content(item))
+            return refs
+        if not isinstance(content, dict):
+            return []
+
+        item_type = content.get("type")
+        if item_type not in {"input_image", "image_url"}:
+            nested = content.get("content")
+            return self._image_refs_from_content(nested) if nested is not None else []
+
+        value = content.get("image_url") or content.get("url") or content.get("image")
+        if isinstance(value, dict):
+            value = value.get("url")
+        return [value] if isinstance(value, str) and value else []
+
+    def _text_from_payload(self, payload: dict[str, object]) -> str:
+        pieces: list[str] = []
+        instructions = payload.get("instructions")
+        if isinstance(instructions, str) and instructions:
+            pieces.append(instructions)
+        for key in ("input", "messages"):
+            value = payload.get(key)
+            text = self._responses_content_to_text(value)
+            if text:
+                pieces.append(text)
+        return "\n\n".join(pieces)
+
+    def _materialize_image_refs(self, request_id: str, refs: list[str]) -> list[str]:
+        images: list[str] = []
+        request_dir = self.config.vlm_input_dir
+        if not request_dir.is_absolute():
+            request_dir = self.config.workspace / request_dir
+        request_dir = request_dir / request_id
+
+        for index, ref in enumerate(refs, start=1):
+            if ref.startswith("data:"):
+                request_dir.mkdir(parents=True, exist_ok=True)
+                images.append(str(self._write_data_url_image(request_dir, index, ref)))
+                continue
+            if ref.startswith("file://"):
+                images.append(urlsplit(ref).path)
+                continue
+            if "://" in ref:
+                images.append(ref)
+                continue
+            path = Path(ref).expanduser()
+            if not path.is_absolute():
+                path = self.config.workspace / path
+            images.append(str(path))
+        return images
+
+    def _write_data_url_image(self, directory: Path, index: int, data_url: str) -> Path:
+        header, separator, payload = data_url.partition(",")
+        if separator != "," or ";base64" not in header:
+            raise GatewayError(400, "Only base64 data URL image inputs are supported")
+        mime = header.removeprefix("data:").split(";", 1)[0].lower()
+        extension = {
+            "image/jpeg": "jpg",
+            "image/jpg": "jpg",
+            "image/png": "png",
+            "image/webp": "webp",
+            "image/gif": "gif",
+        }.get(mime, "img")
+        try:
+            raw = base64.b64decode(payload, validate=True)
+        except ValueError as exc:
+            raise GatewayError(400, "Invalid base64 image data URL") from exc
+        path = directory / f"image-{index}.{extension}"
+        path.write_bytes(raw)
+        return path
+
+    def _run_vlm_summary(self, request_id: str, images: list[str], request_text: str) -> str:
+        model_dir = model_cache_dir(hf_hub_cache_root(), self.config.vlm_model)
+        if not has_hf_snapshot(model_dir):
+            raise GatewayError(
+                424,
+                f"VLM model is not downloaded in the project cache: {self.config.vlm_model}",
+            )
+        if not self.config.vlm_python.is_file():
+            raise GatewayError(500, f"VLM Python executable not found: {self.config.vlm_python}")
+        if not self.config.vlm_summarizer.is_file():
+            raise GatewayError(500, f"VLM summarizer script not found: {self.config.vlm_summarizer}")
+
+        prompt = self.config.vlm_prompt
+        if request_text:
+            prompt = f"{prompt}\n\nUser request/context:\n{request_text}"
+        request = {
+            "model": self.config.vlm_model,
+            "images": images,
+            "prompt": prompt,
+            "max_tokens": self.config.vlm_max_tokens,
+            "temperature": self.config.vlm_temperature,
+        }
+        started = time.monotonic()
+        try:
+            completed = subprocess.run(
+                [str(self.config.vlm_python), str(self.config.vlm_summarizer)],
+                input=json.dumps(request, ensure_ascii=False).encode("utf-8"),
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=str(self.config.workspace),
+                env=os.environ.copy(),
+                timeout=self.config.vlm_timeout_s,
+                check=False,
+            )
+        except subprocess.TimeoutExpired as exc:
+            self.logger.write("ERROR", "vlm_timeout", request_id=request_id, timeout_s=self.config.vlm_timeout_s)
+            raise GatewayError(504, "VLM preprocessing timed out") from exc
+
+        duration_ms = round((time.monotonic() - started) * 1000, 3)
+        if completed.returncode != 0:
+            stderr = completed.stderr.decode("utf-8", "replace")[-4000:]
+            self.logger.write(
+                "ERROR",
+                "vlm_failed",
+                request_id=request_id,
+                returncode=completed.returncode,
+                duration_ms=duration_ms,
+                stderr=stderr,
+            )
+            raise GatewayError(502, f"VLM preprocessing failed: {stderr}")
+
+        try:
+            result = json.loads(completed.stdout)
+        except json.JSONDecodeError as exc:
+            stdout = completed.stdout.decode("utf-8", "replace")[-4000:]
+            self.logger.write("ERROR", "vlm_invalid_json", request_id=request_id, duration_ms=duration_ms, stdout=stdout)
+            raise GatewayError(502, "VLM preprocessing returned invalid JSON") from exc
+        text = result.get("text") if isinstance(result, dict) else None
+        if not isinstance(text, str) or not text:
+            raise GatewayError(502, "VLM preprocessing returned an empty summary")
+        self.logger.write("SUCCESS", "vlm_summary", request_id=request_id, duration_ms=duration_ms, summary_chars=len(text))
+        return text
+
+    def _drop_image_parts(self, route: str, payload: dict[str, object]) -> dict[str, object]:
+        if route == "/v1/chat/completions":
+            messages = payload.get("messages")
+            if isinstance(messages, list):
+                for message in messages:
+                    if isinstance(message, dict):
+                        message["content"] = self._drop_image_parts_from_content(message.get("content"))
+            return payload
+
+        response_input = payload.get("input")
+        if isinstance(response_input, list):
+            for item in response_input:
+                if isinstance(item, dict):
+                    item["content"] = self._drop_image_parts_from_content(item.get("content"))
+        elif isinstance(response_input, dict):
+            response_input["content"] = self._drop_image_parts_from_content(response_input.get("content"))
+        return payload
+
+    def _drop_image_parts_from_content(self, content: object) -> object:
+        if isinstance(content, list):
+            kept = []
+            for item in content:
+                if isinstance(item, dict) and item.get("type") in {"input_image", "image_url"}:
+                    continue
+                kept.append(self._drop_image_parts_from_content(item))
+            return kept
+        if isinstance(content, dict) and content.get("type") not in {"input_image", "image_url"}:
+            rewritten = dict(content)
+            if "content" in rewritten:
+                rewritten["content"] = self._drop_image_parts_from_content(rewritten["content"])
+            return rewritten
+        return content
+
+    def _append_vision_summary(self, route: str, payload: dict[str, object], summary: str) -> None:
+        summary_text = f"画像解析結果（{self.config.vlm_model}）:\n{summary}"
+        if route == "/v1/chat/completions":
+            messages = payload.setdefault("messages", [])
+            if not isinstance(messages, list):
+                payload["messages"] = messages = []
+            messages.append({"role": "user", "content": summary_text})
+            return
+
+        response_input = payload.setdefault("input", [])
+        summary_item = {"role": "user", "content": [{"type": "input_text", "text": summary_text}]}
+        if isinstance(response_input, list):
+            response_input.append(summary_item)
+        else:
+            payload["input"] = [response_input, summary_item]
 
     def _responses_proxy(self, request_id: str, body: bytes | None) -> int:
         payload = self._read_json_object(body)

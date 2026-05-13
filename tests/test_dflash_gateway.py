@@ -1,3 +1,4 @@
+import json
 import os
 import tempfile
 import unittest
@@ -11,6 +12,15 @@ import dflash_gateway
 def make_cached_model(hub: Path, model_id: str) -> None:
     snapshot = hub / f"models--{model_id.replace('/', '--')}" / "snapshots" / "main"
     snapshot.mkdir(parents=True)
+
+
+def json_bytes(payload: object) -> bytes:
+    return json.dumps(payload, ensure_ascii=False).encode("utf-8")
+
+
+def json_loads(payload: bytes | None) -> object:
+    assert payload is not None
+    return json.loads(payload)
 
 
 class DFlashGatewayModelDiscoveryTests(unittest.TestCase):
@@ -30,6 +40,7 @@ class DFlashGatewayModelDiscoveryTests(unittest.TestCase):
             hub = hf_home / "hub"
             make_cached_model(hub, "TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit")
             make_cached_model(hub, "Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit")
+            make_cached_model(hub, "mlx-community/Qwen3.6-35B-A3B-nvfp4")
             make_cached_model(hub, "z-lab/Qwen3.6-35B-A3B-DFlash")
 
             with patch.dict(os.environ, {"HF_HOME": str(hf_home)}, clear=False):
@@ -124,6 +135,82 @@ class DFlashGatewayModelDiscoveryTests(unittest.TestCase):
         self.assertEqual(payload["output_text"], "OK")
         self.assertEqual(payload["output"][0]["content"][0]["type"], "output_text")
         self.assertEqual(payload["usage"]["total_tokens"], 4)
+
+    def test_responses_image_input_is_rewritten_with_vlm_summary(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            handler = object.__new__(dflash_gateway.GatewayHandler)
+            config = SimpleNamespace(
+                workspace=Path(tmp),
+                vlm_enabled=True,
+                vlm_model="mlx-community/Qwen3.6-35B-A3B-nvfp4",
+                vlm_input_dir=Path(tmp) / "vlm-inputs",
+            )
+            manager = SimpleNamespace(stop_backend=lambda **kwargs: {"stopped": False})
+            handler.server = SimpleNamespace(config=config, manager=manager, logger=SimpleNamespace(write=lambda *args, **kwargs: None))
+            payload = {
+                "model": "TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit",
+                "input": [
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "input_text", "text": "この画面を見て"},
+                            {"type": "input_image", "image_url": "data:image/png;base64,aGVsbG8="},
+                        ],
+                    }
+                ],
+            }
+
+            with patch.object(handler, "_run_vlm_summary", return_value="OKボタンが見える") as run_vlm:
+                rewritten = handler._prepare_multimodal_request(
+                    request_id="req-test",
+                    route="/v1/responses",
+                    content_type="application/json",
+                    body=json_bytes(payload),
+                )
+
+        self.assertIsNotNone(rewritten)
+        data = json_loads(rewritten)
+        self.assertEqual(data["input"][0]["content"], [{"type": "input_text", "text": "この画面を見て"}])
+        self.assertIn("OKボタンが見える", data["input"][1]["content"][0]["text"])
+        run_vlm.assert_called_once()
+
+    def test_chat_image_input_is_rewritten_with_vlm_summary(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            handler = object.__new__(dflash_gateway.GatewayHandler)
+            config = SimpleNamespace(
+                workspace=Path(tmp),
+                vlm_enabled=True,
+                vlm_model="mlx-community/Qwen3.6-35B-A3B-nvfp4",
+                vlm_input_dir=Path(tmp) / "vlm-inputs",
+            )
+            manager = SimpleNamespace(stop_backend=lambda **kwargs: {"stopped": False})
+            handler.server = SimpleNamespace(config=config, manager=manager, logger=SimpleNamespace(write=lambda *args, **kwargs: None))
+            payload = {
+                "model": "TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit",
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": "Analyze this"},
+                            {"type": "image_url", "image_url": {"url": "data:image/png;base64,aGVsbG8="}},
+                        ],
+                    }
+                ],
+            }
+
+            with patch.object(handler, "_run_vlm_summary", return_value="A screenshot with an error"):
+                rewritten = handler._prepare_multimodal_request(
+                    request_id="req-test",
+                    route="/v1/chat/completions",
+                    content_type="application/json",
+                    body=json_bytes(payload),
+                )
+
+        self.assertIsNotNone(rewritten)
+        data = json_loads(rewritten)
+        self.assertEqual(data["messages"][0]["content"], [{"type": "text", "text": "Analyze this"}])
+        self.assertEqual(data["messages"][1]["role"], "user")
+        self.assertIn("A screenshot with an error", data["messages"][1]["content"])
 
 
 if __name__ == "__main__":

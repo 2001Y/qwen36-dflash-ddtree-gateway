@@ -12,10 +12,9 @@ fi
 uv venv .venv --python "${PYTHON:-python3.12}"
 source .venv/bin/activate
 uv pip install -U pip
-uv pip install -U "git+https://github.com/bstnxbt/dflash-mlx" huggingface_hub fastapi uvicorn
+uv pip install -U "git+https://github.com/bstnxbt/dflash-mlx" huggingface_hub fastapi uvicorn mlx-vlm
 uv pip install -e bench/ddtree-mlx
 
 echo "Setup complete."
 echo "Next: cp .env.example .env"
-echo "Then: huggingface-cli login"
-
+echo "Then: hf auth login"

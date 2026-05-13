@@ -8,6 +8,7 @@ Apple Silicon Mac で、`TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit` を DFlash
 - project-local cache 上の DFlash 対応 model を `/v1/models` に出し、request の `model` に応じて backend を切り替える gateway
 - 現行の TheCluster + `z-lab/Qwen3.6-35B-A3B-DFlash` 標準設定
 - download と memory load lifecycle を分離した `.models` 前提の運用設定
+- 画像入力時だけ `mlx-community/Qwen3.6-35B-A3B-nvfp4` を起動し、VLM 要約を text agent へ渡す preprocessing route
 - DDTree 実験実装のコピー
 - ts-bench 比較で使ったスクリプト、ランキング、主要 summary artifact
 
@@ -82,7 +83,7 @@ Youssofal でも 35B-A3B / MLX / 4bit / Heretic 系なので、同じ DFlash dra
 uv venv .venv --python python3.12
 source .venv/bin/activate
 uv pip install -U pip
-uv pip install -U "git+https://github.com/bstnxbt/dflash-mlx@20d68db3b3c0ae3dd6d3a2f0d3c10b2344ee514e" huggingface_hub fastapi uvicorn
+uv pip install -U "git+https://github.com/bstnxbt/dflash-mlx@20d68db3b3c0ae3dd6d3a2f0d3c10b2344ee514e" huggingface_hub fastapi uvicorn mlx-vlm
 uv pip install -e bench/ddtree-mlx
 ```
 
@@ -110,12 +111,19 @@ download は gateway の責務ではありません。取得するときだけ o
 ./scripts/download-models.command
 ```
 
+VLM preprocessing も使う場合は、`nvfp4` model も事前取得します。
+
+```bash
+DFLASH_DOWNLOAD_VLM=1 ./scripts/download-models.command
+```
+
 既に別場所へ HF cache を持っている場合は、次のような構造で `.models/huggingface/hub` に移してください。
 
 ```text
 .models/huggingface/hub/models--TheCluster--Qwen3.6-35B-A3B-Heretic-MLX-4bit
 .models/huggingface/hub/models--Youssofal--Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit
 .models/huggingface/hub/models--z-lab--Qwen3.6-35B-A3B-DFlash
+.models/huggingface/hub/models--mlx-community--Qwen3.6-35B-A3B-nvfp4
 ```
 
 ## DFlash gateway を起動する
@@ -239,6 +247,46 @@ curl -s http://127.0.0.1:8000/gateway/metrics
 .artifacts/dflash/gateway/events.jsonl
 .artifacts/dflash/gateway/backend.log
 ```
+
+## 画像入力 / VLM preprocessing
+
+この gateway は、DFlash/DDTree backend 自体を multimodal 化しません。画像が入った request だけ `mlx-vlm` を別プロセスで起動し、`mlx-community/Qwen3.6-35B-A3B-nvfp4` で画像を coding/tool agent 向けの構造化テキストへ変換します。その summary を user message として追加し、最終推論は TheCluster + DFlash/DDTree の text agent に渡します。
+
+```text
+image request
+  -> dflash_gateway.py
+  -> vlm_image_summarizer.py
+  -> mlx-community/Qwen3.6-35B-A3B-nvfp4
+  -> vision summary
+  -> TheCluster + DFlash backend
+```
+
+VLM model は download しないと動きません。gateway は暗黙 download せず、未取得なら `424` で失敗します。
+
+```bash
+DFLASH_DOWNLOAD_VLM=1 ./scripts/download-models.command
+```
+
+テスト用の Responses API request 例:
+
+```bash
+curl -s http://127.0.0.1:8000/v1/responses \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model": "TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit",
+    "input": [{
+      "role": "user",
+      "content": [
+        {"type": "input_text", "text": "この画像のエラーを読んで、原因を短く説明して"},
+        {"type": "input_image", "image_url": "data:image/png;base64,..."}
+      ]
+    }],
+    "max_output_tokens": 512,
+    "temperature": 0
+  }'
+```
+
+2026-05-14 の実機確認では、`data:image/png;base64` の小さい PNG から `Return exactly OK` を読ませる request が成功しました。初回は VLM preprocessing が `68.5s`、DFlash backend cold start を含む request 全体が `107.2s` でした。
 
 ## DDTree server を起動する
 

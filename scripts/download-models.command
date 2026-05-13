@@ -17,9 +17,16 @@ if [[ "$MODELS_DIR" != /* ]]; then
   MODELS_DIR="$ROOT_DIR/$MODELS_DIR"
 fi
 
-HF_CLI="${HF_CLI:-$ROOT_DIR/.venv/bin/huggingface-cli}"
+HF_CLI="${HF_CLI:-}"
+if [[ -z "$HF_CLI" ]]; then
+  if [[ -x "$ROOT_DIR/.venv/bin/hf" ]]; then
+    HF_CLI="$ROOT_DIR/.venv/bin/hf"
+  else
+    HF_CLI="$ROOT_DIR/.venv/bin/huggingface-cli"
+  fi
+fi
 if [[ ! -x "$HF_CLI" ]]; then
-  printf '[%s] ERROR: huggingface-cli not found: %s\n' "$(date '+%Y-%m-%dT%H:%M:%S%z')" "$HF_CLI" >&2
+  printf '[%s] ERROR: hf CLI not found: %s\n' "$(date '+%Y-%m-%dT%H:%M:%S%z')" "$HF_CLI" >&2
   exit 1
 fi
 
@@ -34,6 +41,10 @@ MODELS=(
   "${DFLASH_DRAFT:-z-lab/Qwen3.6-35B-A3B-DFlash}"
   "Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit"
 )
+
+if [[ "${DFLASH_DOWNLOAD_VLM:-0}" == "1" || "${DFLASH_DOWNLOAD_VLM:-0}" == "true" ]]; then
+  MODELS+=("${DFLASH_VLM_MODEL:-mlx-community/Qwen3.6-35B-A3B-nvfp4}")
+fi
 
 printf '[%s] Hugging Face cache: %s\n' "$(date '+%Y-%m-%dT%H:%M:%S%z')" "$HF_HUB_CACHE"
 for model in "${MODELS[@]}"; do
