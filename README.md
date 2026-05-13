@@ -32,6 +32,8 @@ ts-bench の有効比較では、`TheCluster + DDTree` が最も良い結果で�
 
 速度だけなら通常 DFlash が速い場面があります。ただし coding agent では「正解に到達すること」を優先するため、採用候補は `TheCluster + DDTree` です。
 
+ベンチは「比較結果の取得」には成功しています。ただし TOP_25 全完走ではありません。`TheCluster + DDTree` は crash 前までの有効 10 exercise で `7/10` 成功し、TOP_25 Score としては `7/25 = 28.0%` です。`dnd-character` は Metal crash 系の infra failure として分離しています。
+
 詳細は [bench/docs/tsbench-rankings-20260513.md](bench/docs/tsbench-rankings-20260513.md) を見てください。
 
 ## 必要なもの
@@ -40,7 +42,7 @@ ts-bench の有効比較では、`TheCluster + DDTree` が最も良い結果で�
 - macOS
 - Python 3.11 以上。検証時は Python 3.12 系
 - `uv`
-- Hugging Face アカウントと対象モデルへの同意
+- Hugging Face アカウント。TheCluster を標準にする場合はログイン推奨
 - 十分な SSD 空き容量
 
 SSD は最低でも `60GB` 程度、現実的には `80GB` 以上空けることを推奨します。理由は、target model、DFlash draft、HF cache、実行 artifact、仮想環境が同時に必要になるためです。
@@ -60,6 +62,15 @@ Hugging Face にログインします。
 ```bash
 huggingface-cli login
 ```
+
+HF ログインなしでまず試したい場合は、`Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit` を使えます。2026-05-13 時点の Hugging Face API では `private=false` / `gated=false` として確認しています。ただし大容量 Xet download なので、ログインなしだと rate limit や download speed で不利になる可能性があります。
+
+```env
+DFLASH_MODEL=Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit
+DFLASH_DRAFT=z-lab/Qwen3.6-35B-A3B-DFlash
+```
+
+Youssofal でも 35B-A3B / MLX / 4bit / Heretic 系なので、同じ DFlash draft を明示して DFlash / DDTree 経路で起動できます。ただし手元ベンチでは `DDTree + Youssofal` は `3/25` までの部分評価に留まっており、総合採用判断では TheCluster を上位にしています。
 
 仮想環境を作り、DFlash と DDTree 実験実装を入れます。
 
@@ -208,10 +219,18 @@ DFLASH_PREFIX_CACHE_L2_MAX_BYTES=50GB
 
 巨大な `results.jsonl`、model cache、`.venv`、`.uv-cache` は含めていません。
 
+ベンチの状態は次の扱いです。
+
+- 実行基盤: ts-bench matrix の実行と summary artifact の取得には成功
+- 完走状態: TOP_25 を完全完走した組み合わせはなし
+- 主結果: `TheCluster + DDTree` が有効 10 exercise で `7/10` 成功
+- 参考結果: `DDTree + Youssofal` は `3/25` まで有効、`2/3` 成功
+- 未評価: `DFlash + Youssofal` は同一 gateway crash circuit 汚染を避けるため未評価
+
 ## 注意点
 
 - DDTree は DFlash の代替ではありません。今回の `DDTree + TheCluster` は、TheCluster target と DFlash draft を使い、その上に DDTree 検証木を載せる構成です。
+- `Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit` は HF ログインなしで試せる代替候補です。ただし本リポジトリの第一候補は、手元 ts-bench で最良だった TheCluster です。
 - `GET /v1/models` は標準では backend を起動せず、静的な model list を返します。生成リクエストで backend を起動します。
 - `dnd-character` は DFlash / DDTree とも Metal crash 系の infra failure を再現しました。通常の不正解とは分けて扱っています。
 - oMLX は使っていません。DFlash 実験では `dflash-mlx` 直結のほうが制御しやすいためです。
-

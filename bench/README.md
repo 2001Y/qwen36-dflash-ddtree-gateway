@@ -27,3 +27,12 @@
 
 再計測する場合は、`workspace-files/benchmark-ts-bench-matrix.py` を出発点にし、candidate ごとに gateway / backend / artifact directory を分離してください。同一 gateway の crash circuit が後続 candidate に影響すると、比較が汚染されます。
 
+## ベンチの成否
+
+ts-bench matrix は比較に使える結果を取得できていますが、TOP_25 を完全完走した組み合わせはありません。
+
+- `DDTree + TheCluster`: 有効 `10/25`、通常成功 `7`、通常失敗 `3`、infra failure `1`
+- `DFlash + TheCluster`: 有効 `10/25`、通常成功 `5`、通常失敗 `5`、infra failure `1`
+- `DDTree + Youssofal`: 有効 `3/25`、通常成功 `2`、通常失敗 `1`、infra failure `0`
+
+したがって「ベンチ実行自体は成功したが、全パターン・全問題の完走成功ではない」という扱いです。
