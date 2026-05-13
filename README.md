@@ -4,7 +4,7 @@ Apple Silicon Mac で、`TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit` を DFlash
 
 このリポジトリは次を含みます。
 
-- DFlash backend をオンデマンド起動し、未使用 5 分で停止する OpenAI 互換 gateway
+- DFlash backend をオンデマンド起動し、未使用 30 秒で停止する OpenAI 互換 gateway
 - local cache 上の DFlash 対応 model を `/v1/models` に出し、request の `model` に応じて backend を切り替える gateway
 - 現行の TheCluster + `z-lab/Qwen3.6-35B-A3B-DFlash` 標準設定
 - DDTree 実験実装のコピー
@@ -154,7 +154,9 @@ curl -s http://127.0.0.1:8000/v1/chat/completions \
 
 ## 自動停止条件
 
-`DFLASH_GATEWAY_IDLE_SECONDS=300` が標準です。最後に `/v1/*` の生成系リクエストを転送してから 300 秒間アクセスがなければ、gateway が backend process group に `SIGTERM` を送り、必要なら `SIGKILL` します。
+`DFLASH_GATEWAY_IDLE_SECONDS=30` が標準です。最後に `/v1/*` の生成系リクエストを転送してから 30 秒間アクセスがなければ、gateway が backend process group に `SIGTERM` を送り、必要なら `SIGKILL` します。
+
+TheCluster の手元実測では、local cache 済みの backend 起動は約 `9.1s`、最小 API リクエスト全体は約 `13.5s` でした。保持中は `mlx_active` が約 `20GB` になるため、通常運用は短めの idle stop を標準にしています。長い会話で再ロードを減らしたい場合だけ、`.env` で `DFLASH_GATEWAY_IDLE_SECONDS=300` などに上げてください。
 
 手動停止:
 
