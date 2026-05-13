@@ -889,7 +889,7 @@ def main() -> int:
             gateway_args = argparse.Namespace(
                 gateway_port=args.gateway_port,
                 backend_port=args.backend_port,
-                idle_seconds=300,
+                idle_seconds=max(300, args.start_timeout + 300),
                 start_timeout=args.start_timeout,
                 request_timeout=args.request_timeout,
             )
