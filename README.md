@@ -34,9 +34,9 @@ ts-bench の有効比較では、`TheCluster + DDTree` が最も良い結果で�
 
 ベンチは「比較結果の取得」には成功しています。ただし TOP_25 全完走ではありません。`TheCluster + DDTree` は crash 前までの有効 10 exercise で `7/10` 成功し、TOP_25 Score としては `7/25 = 28.0%` です。`dnd-character` は Metal crash 系の infra failure として分離しています。
 
-詳細は [bench/docs/tsbench-rankings-20260513.md](bench/docs/tsbench-rankings-20260513.md) を見てください。
+精度・速度・download 数の作り直し版は [bench/docs/rankings-accuracy-speed-downloads-20260513.md](bench/docs/rankings-accuracy-speed-downloads-20260513.md) を見てください。詳細な ts-bench 内訳は [bench/docs/tsbench-rankings-20260513.md](bench/docs/tsbench-rankings-20260513.md) に置いています。
 
-Hugging Face download 数のランキングは [bench/docs/hf-download-rankings-20260513.md](bench/docs/hf-download-rankings-20260513.md) に置いています。今回の対象では `Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit` が最大で、`TheCluster` の約 `9.97x` です。ただし追加ベンチでは、download 数最大の `Youssofal` は `DDTree` で `23/25` まで有効通常結果を取り、`6/25` 成功に留まったため、`TheCluster + DDTree` を上回っていません。
+Hugging Face download 数のランキングは [bench/docs/hf-download-rankings-20260513.md](bench/docs/hf-download-rankings-20260513.md) に置いています。今回の対象では `Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit` が最大で、`TheCluster` の約 `10.22x` です。ただし追加ベンチでは、download 数最大の `Youssofal` は `DDTree` で `23/25` まで有効通常結果を取り、`6/25` 成功に留まったため、`TheCluster + DDTree` を上回っていません。
 
 ## 必要なもの
 
@@ -219,6 +219,7 @@ DFLASH_PREFIX_CACHE_L2_MAX_BYTES=53687091200
 - [bench/workspace-files](bench/workspace-files): 元ワークスペースからコピーした起動スクリプトと ts-bench matrix runner
 - [bench/ddtree-mlx](bench/ddtree-mlx): このマシンで手を入れた DDTree 実験実装
 - [bench/docs](bench/docs): ts-bench ランキング
+- [bench/docs/rankings-accuracy-speed-downloads-20260513.md](bench/docs/rankings-accuracy-speed-downloads-20260513.md): 精度・速度・download 数の統合ランキング
 - [bench/docs/hf-download-rankings-20260513.md](bench/docs/hf-download-rankings-20260513.md): 対象モデルの Hugging Face download 数ランキング
 - [bench/artifacts](bench/artifacts): 主要 `summary.json`
 

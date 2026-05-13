@@ -2,6 +2,8 @@
 
 このメモは、Qwen3.6 35B-A3B 脱獄系候補の DFlash / DDTree 再実行結果を、複数観点でランキングしたものです。
 
+精度・速度・download 数を同じ表で見直した最新版は `_docs/rankings-accuracy-speed-downloads-20260513.md` を正本にする。
+
 ## 前提
 
 正本 artifact:
