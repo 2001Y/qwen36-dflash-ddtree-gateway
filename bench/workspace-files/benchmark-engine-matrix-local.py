@@ -25,6 +25,7 @@ ROOT = Path(__file__).resolve().parent
 DRAFT_REF = "z-lab/Qwen3.6-35B-A3B-DFlash"
 BACKEND_ENV = ROOT / ".dflash-backend.env"
 RELEASE_GATEWAY = ROOT / "_release" / "qwen36-dflash-ddtree-gateway" / "dflash_gateway.py"
+BENCH_PYTHON = Path(os.environ.get("BENCH_PYTHON", str(ROOT / ".venv" / "bin" / "python")))
 
 
 @dataclass(frozen=True)
@@ -199,7 +200,7 @@ def managed_gateway(args: Any, gateway_dir: Path, log: Any):
         }
     )
     gateway_path = RELEASE_GATEWAY if RELEASE_GATEWAY.exists() else ROOT / "dflash_gateway.py"
-    command = [str(ROOT / ".venv" / "bin" / "python"), str(gateway_path)]
+    command = [str(BENCH_PYTHON), str(gateway_path)]
     with stdout_path.open("ab") as stdout, stderr_path.open("ab") as stderr:
         proc = subprocess.Popen(
             command,

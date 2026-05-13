@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="/Users/2001y/Documents/Codex/2026-05-10/mlx-omlx-dflash-mlx-z-lab"
 cd "$ROOT"
 
-STAMP="$(date '+%Y%m%d-%H%M%S')-youssofal-top25-continuation"
+STAMP="$(date '+%Y%m%d-%H%M%S')-youssofal-ddtree-top25-continuation"
 OUT_DIR="$ROOT/.artifacts/dflash/ts-bench-matrix/$STAMP"
 mkdir -p "$OUT_DIR"
 RUNNER_LOG="$OUT_DIR/runner.log"
@@ -13,26 +13,18 @@ export BENCHMARK_ENGINE_MATRIX_FILE="$ROOT/benchmark-engine-matrix-local.py"
 export PYTHONDONTWRITEBYTECODE=1
 export BENCH_PYTHON="${BENCH_PYTHON:-/private/tmp/mlx-dflash-bench-venv/bin/python}"
 export BENCH_VENV_BIN="${BENCH_VENV_BIN:-$(dirname "$BENCH_PYTHON")}"
-export DFLASH_PYTHON="${DFLASH_PYTHON:-$BENCH_PYTHON}"
-export DFLASH_BIN="${DFLASH_BIN:-$BENCH_VENV_BIN/dflash}"
-export DFLASH_PROFILE="${DFLASH_PROFILE:-balanced}"
-export DFLASH_MAX_CTX="${DFLASH_MAX_CTX:-24000}"
-export DFLASH_PREFILL_STEP_SIZE="${DFLASH_PREFILL_STEP_SIZE:-4096}"
-export DFLASH_PREFIX_CACHE_MAX_ENTRIES="${DFLASH_PREFIX_CACHE_MAX_ENTRIES:-4}"
-export DFLASH_PREFIX_CACHE_MAX_BYTES="${DFLASH_PREFIX_CACHE_MAX_BYTES:-8589934592}"
-export DFLASH_PREFIX_CACHE_L2="${DFLASH_PREFIX_CACHE_L2:-0}"
 
 {
-  echo "[$(date '+%Y-%m-%dT%H:%M:%S%z')] starting Youssofal TOP_25 continuation"
+  echo "[$(date '+%Y-%m-%dT%H:%M:%S%z')] starting Youssofal DDTree TOP_25 continuation"
   echo "OUT_DIR=$OUT_DIR"
   echo "BENCHMARK_ENGINE_MATRIX_FILE=$BENCHMARK_ENGINE_MATRIX_FILE"
   echo "BENCH_PYTHON=$BENCH_PYTHON"
-  echo "DFLASH_BIN=$DFLASH_BIN"
+  echo "BENCH_VENV_BIN=$BENCH_VENV_BIN"
 } >> "$RUNNER_LOG"
 
 set +e
 "$BENCH_PYTHON" "$ROOT/benchmark-ts-bench-matrix.py" \
-  --engines dflash,ddtree \
+  --engines ddtree \
   --candidates qwen36_35b_a3b_youssofal \
   --cached-only \
   --exercise top25 \
@@ -49,8 +41,10 @@ set +e
   --outer-timeout 1200 \
   --min-system-free-percent 20 \
   --out-dir "$OUT_DIR" >> "$RUNNER_LOG" 2>&1
-
 status=$?
 set -e
+
 echo "[$(date '+%Y-%m-%dT%H:%M:%S%z')] finished status=$status" >> "$RUNNER_LOG"
+printf '%s\n' "$OUT_DIR" >> "$RUNNER_LOG"
+printf '%s\n' "$OUT_DIR"
 exit "$status"

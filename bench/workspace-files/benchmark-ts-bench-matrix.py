@@ -24,6 +24,8 @@ ENGINE_MATRIX_FILE = Path(
     os.environ.get("BENCHMARK_ENGINE_MATRIX_FILE", str(ROOT / "benchmark-engine-matrix.py"))
 )
 ARTIFACT_ROOT = ROOT / ".artifacts" / "dflash" / "ts-bench-matrix"
+BENCH_PYTHON = Path(os.environ.get("BENCH_PYTHON", str(ROOT / ".venv" / "bin" / "python")))
+BENCH_VENV_BIN = Path(os.environ.get("BENCH_VENV_BIN", str(BENCH_PYTHON.parent)))
 TOP_25_EXERCISES = [
     "acronym",
     "anagram",
@@ -363,7 +365,7 @@ def run_ts_bench(
             "AIDER_TIMEOUT": str(args.request_timeout),
             "NO_COLOR": "1",
             "CI": "1",
-            "PATH": f"{tools_bin}:{node_bin}:{ROOT / '.venv' / 'bin'}:{os.environ.get('PATH', '')}",
+            "PATH": f"{tools_bin}:{node_bin}:{BENCH_VENV_BIN}:{os.environ.get('PATH', '')}",
         }
     )
     model_id = model_id_for_agent(args.agent, candidate)
@@ -756,7 +758,7 @@ def ddtree_server(candidate: Any, args: argparse.Namespace, out_dir: Path, engin
             f"PYTHONPATH={args.ddtree_root}",
             "DDTREE_EXACT_COMMIT=1",
             "PYTHONDONTWRITEBYTECODE=1",
-            str(ROOT / ".venv" / "bin" / "python"),
+            str(BENCH_PYTHON),
             str(Path(args.ddtree_root) / "ddtree_server.py"),
             "--host",
             "127.0.0.1",

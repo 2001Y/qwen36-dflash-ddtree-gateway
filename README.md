@@ -36,7 +36,7 @@ ts-bench の有効比較では、`TheCluster + DDTree` が最も良い結果で�
 
 詳細は [bench/docs/tsbench-rankings-20260513.md](bench/docs/tsbench-rankings-20260513.md) を見てください。
 
-Hugging Face download 数のランキングは [bench/docs/hf-download-rankings-20260513.md](bench/docs/hf-download-rankings-20260513.md) に置いています。今回の対象では `Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit` が最大で、`TheCluster` の約 `9.97x` です。
+Hugging Face download 数のランキングは [bench/docs/hf-download-rankings-20260513.md](bench/docs/hf-download-rankings-20260513.md) に置いています。今回の対象では `Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit` が最大で、`TheCluster` の約 `9.97x` です。ただし追加ベンチでは、download 数最大の `Youssofal` はまだ `TheCluster + DDTree` を上回っていません。
 
 ## 必要なもの
 
@@ -72,7 +72,7 @@ DFLASH_MODEL=Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit
 DFLASH_DRAFT=z-lab/Qwen3.6-35B-A3B-DFlash
 ```
 
-Youssofal でも 35B-A3B / MLX / 4bit / Heretic 系なので、同じ DFlash draft を明示して DFlash / DDTree 経路で起動できます。ただし手元ベンチでは `DDTree + Youssofal` は `3/25` までの部分評価に留まっており、総合採用判断では TheCluster を上位にしています。
+Youssofal でも 35B-A3B / MLX / 4bit / Heretic 系なので、同じ DFlash draft を明示して DFlash / DDTree 経路で起動できます。ただし手元ベンチでは `DFlash + Youssofal` は `4/25`、`DDTree + Youssofal` は `6/25` までの部分評価で、総合採用判断ではまだ TheCluster を上位にしています。
 
 仮想環境を作り、DFlash と DDTree 実験実装を入れます。
 
@@ -80,9 +80,11 @@ Youssofal でも 35B-A3B / MLX / 4bit / Heretic 系なので、同じ DFlash dra
 uv venv .venv --python python3.12
 source .venv/bin/activate
 uv pip install -U pip
-uv pip install -U "git+https://github.com/bstnxbt/dflash-mlx" huggingface_hub fastapi uvicorn
+uv pip install -U "git+https://github.com/bstnxbt/dflash-mlx@20d68db3b3c0ae3dd6d3a2f0d3c10b2344ee514e" huggingface_hub fastapi uvicorn
 uv pip install -e bench/ddtree-mlx
 ```
+
+2026-05-13 の検証では、`dflash-mlx` 最新 commit `90ec8d4d901b90e434a743a8ee83b6823cf10a42` で DDTree 経路の callback signature 回帰に当たったため、既存成功 commit に固定しています。
 
 `uv` がない場合は先に入れてください。
 
@@ -196,7 +198,7 @@ DFLASH_PROFILE=balanced
 DFLASH_MAX_CTX=24000
 DFLASH_PREFILL_STEP_SIZE=4096
 DFLASH_PREFIX_CACHE_MAX_ENTRIES=4
-DFLASH_PREFIX_CACHE_MAX_BYTES=8GB
+DFLASH_PREFIX_CACHE_MAX_BYTES=8589934592
 DFLASH_PREFIX_CACHE_L2=0
 DDTREE_TREE_BUDGET=4
 ```
@@ -205,7 +207,7 @@ L2 prefix cache は SSD 空き容量が十分ある場合だけ有効化しま�
 
 ```text
 DFLASH_PREFIX_CACHE_L2=1
-DFLASH_PREFIX_CACHE_L2_MAX_BYTES=50GB
+DFLASH_PREFIX_CACHE_L2_MAX_BYTES=53687091200
 ```
 
 ただし 2026-05-13 時点の検証マシンは空き容量が厳しかったため、標準は L1 のみです。
@@ -227,8 +229,8 @@ DFLASH_PREFIX_CACHE_L2_MAX_BYTES=50GB
 - 実行基盤: ts-bench matrix の実行と summary artifact の取得には成功
 - 完走状態: TOP_25 を完全完走した組み合わせはなし
 - 主結果: `TheCluster + DDTree` が有効 10 exercise で `7/10` 成功
-- 参考結果: `DDTree + Youssofal` は `3/25` まで有効、`2/3` 成功
-- 未評価: `DFlash + Youssofal` は同一 gateway crash circuit 汚染を避けるため未評価
+- 参考結果: `DFlash + Youssofal` は `12/25` まで有効、`4/25` 成功
+- 参考結果: `DDTree + Youssofal` は `10/25` まで有効、`6/25` 成功。rest-per-exercise で再評価中
 
 ## 注意点
 
@@ -236,4 +238,5 @@ DFLASH_PREFIX_CACHE_L2_MAX_BYTES=50GB
 - `Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit` は HF ログインなしで試せる代替候補です。ただし本リポジトリの第一候補は、手元 ts-bench で最良だった TheCluster です。
 - `GET /v1/models` は標準では backend を起動せず、静的な model list を返します。生成リクエストで backend を起動します。
 - `dnd-character` は DFlash / DDTree とも Metal crash 系の infra failure を再現しました。通常の不正解とは分けて扱っています。
+- `Youssofal` は download 数では最大ですが、現時点の ts-bench では TheCluster を上回っていません。
 - oMLX は使っていません。DFlash 実験では `dflash-mlx` 直結のほうが制御しやすいためです。
