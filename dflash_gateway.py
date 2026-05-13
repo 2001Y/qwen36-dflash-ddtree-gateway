@@ -58,6 +58,40 @@ def read_bool(name: str, default: bool) -> bool:
     return value.lower() not in {"0", "false", "no", "off"}
 
 
+def load_env_defaults(path: Path) -> None:
+    if not path.is_file():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        if stripped.startswith("export "):
+            stripped = stripped.removeprefix("export ").strip()
+        if "=" not in stripped:
+            continue
+        key, value = stripped.split("=", 1)
+        key = key.strip()
+        value = value.strip()
+        if not key:
+            continue
+        if (value.startswith("'") and value.endswith("'")) or (value.startswith('"') and value.endswith('"')):
+            value = value[1:-1]
+        os.environ.setdefault(key, value)
+
+
+def configure_project_model_cache(workspace: Path) -> None:
+    raw_models_dir = os.environ.get("DFLASH_MODELS_DIR")
+    models_dir = Path(raw_models_dir).expanduser() if raw_models_dir else workspace / ".models"
+    if not models_dir.is_absolute():
+        models_dir = workspace / models_dir
+    os.environ["DFLASH_MODELS_DIR"] = str(models_dir)
+    os.environ.setdefault("HF_HOME", str(models_dir / "huggingface"))
+    os.environ.setdefault("HF_HUB_CACHE", str(Path(os.environ["HF_HOME"]).expanduser() / "hub"))
+    os.environ.setdefault("HF_XET_CACHE", str(Path(os.environ["HF_HOME"]).expanduser() / "xet"))
+    os.environ.setdefault("HF_HUB_OFFLINE", "1")
+    os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
+
+
 @dataclasses.dataclass(frozen=True)
 class ModelSpec:
     id: str
@@ -87,10 +121,13 @@ def has_hf_snapshot(path: Path) -> bool:
 
 
 def hf_hub_cache_root() -> Path:
+    hf_hub_cache = os.environ.get("HF_HUB_CACHE")
+    if hf_hub_cache:
+        return Path(hf_hub_cache).expanduser()
     hf_home = os.environ.get("HF_HOME")
     if hf_home:
         return Path(hf_home).expanduser() / "hub"
-    return Path(os.environ.get("HF_HUB_CACHE", "~/.cache/huggingface/hub")).expanduser()
+    return Path("~/.cache/huggingface/hub").expanduser()
 
 
 def infer_draft_model(model_id: str) -> str | None:
@@ -162,9 +199,13 @@ def parse_model_specs_pairs(raw: str) -> tuple[ModelSpec, ...]:
 def read_env_file_value(path: Path, name: str) -> str | None:
     if not path.is_file():
         return None
-    prefix = f"export {name}="
     for line in path.read_text(encoding="utf-8").splitlines():
         stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        if stripped.startswith("export "):
+            stripped = stripped.removeprefix("export ").strip()
+        prefix = f"{name}="
         if not stripped.startswith(prefix):
             continue
         value = stripped[len(prefix):].strip()
@@ -213,8 +254,8 @@ def discover_local_model_specs(workspace: Path) -> tuple[ModelSpec, ...]:
     if specs:
         return dedupe_model_specs(specs)
 
-    model_id = os.environ.get("DFLASH_MODEL") or read_env_file_value(workspace / ".dflash-backend.env", "DFLASH_MODEL")
-    draft = os.environ.get("DFLASH_DRAFT") or read_env_file_value(workspace / ".dflash-backend.env", "DFLASH_DRAFT")
+    model_id = os.environ.get("DFLASH_MODEL") or read_env_file_value(workspace / ".env", "DFLASH_MODEL")
+    draft = os.environ.get("DFLASH_DRAFT") or read_env_file_value(workspace / ".env", "DFLASH_DRAFT")
     if model_id and draft:
         return (ModelSpec(id=model_id, draft=draft),)
     return ()
@@ -278,16 +319,15 @@ class GatewayConfig:
     @classmethod
     def from_env(cls, script_dir: Path) -> "GatewayConfig":
         workspace = Path(os.environ.get("DFLASH_GATEWAY_WORKSPACE", str(script_dir))).expanduser().resolve()
+        load_env_defaults(workspace / ".env")
+        configure_project_model_cache(workspace)
         log_path = Path(
             os.environ.get("DFLASH_GATEWAY_LOG", str(workspace / ".artifacts/dflash/gateway/events.jsonl"))
         ).expanduser()
         backend_log_path = Path(
             os.environ.get("DFLASH_GATEWAY_BACKEND_LOG", str(workspace / ".artifacts/dflash/gateway/backend.log"))
         ).expanduser()
-        backend_command = os.environ.get(
-            "DFLASH_GATEWAY_BACKEND_COMMAND",
-            str(workspace / "start-dflash-backend.command"),
-        )
+        backend_command = os.environ.get("DFLASH_GATEWAY_BACKEND_COMMAND", "")
         return cls(
             workspace=workspace,
             models=discover_local_model_specs(workspace),
@@ -550,7 +590,7 @@ class BackendManager:
         return {"stopped": True, "pid": pid, "exit_code": exit_code}
 
     def _spawn_backend(self, request_id: str, model: ModelSpec) -> None:
-        command = shlex.split(self.config.backend_command)
+        command = shlex.split(self.config.backend_command) if self.config.backend_command else self._internal_backend_command(model)
         if not command:
             raise GatewayError(500, "DFLASH_GATEWAY_BACKEND_COMMAND is empty")
 
@@ -597,6 +637,54 @@ class BackendManager:
             model=model.id,
             draft=model.draft,
         )
+
+    def _internal_backend_command(self, model: ModelSpec) -> list[str]:
+        workspace = self.config.workspace
+        dflash_bin = os.environ.get("DFLASH_BIN", str(workspace / ".venv/bin/dflash"))
+        profile = os.environ.get("DFLASH_PROFILE", "balanced")
+        diagnostics = os.environ.get("DFLASH_DIAGNOSTICS", "basic")
+        max_ctx = os.environ.get("DFLASH_MAX_CTX", "24000")
+        prefill_step_size = os.environ.get("DFLASH_PREFILL_STEP_SIZE", "4096")
+        prefix_cache_max_entries = os.environ.get("DFLASH_PREFIX_CACHE_MAX_ENTRIES", "4")
+        prefix_cache_max_bytes = os.environ.get("DFLASH_PREFIX_CACHE_MAX_BYTES", "8589934592")
+        command = [
+            dflash_bin,
+            "serve",
+            "--model",
+            model.id,
+            "--draft",
+            model.draft,
+            "--host",
+            self.config.backend_host,
+            "--port",
+            str(self.config.backend_port),
+            "--profile",
+            profile,
+            "--diagnostics",
+            diagnostics,
+            "--dflash-max-ctx",
+            max_ctx,
+            "--prefill-step-size",
+            prefill_step_size,
+            "--prefix-cache-max-entries",
+            prefix_cache_max_entries,
+            "--prefix-cache-max-bytes",
+            prefix_cache_max_bytes,
+            "--fastpath-max-tokens",
+            "0",
+        ]
+        prefix_cache_l2 = os.environ.get("DFLASH_PREFIX_CACHE_L2", "0").lower()
+        if prefix_cache_l2 in {"1", "true", "yes", "on"}:
+            command.extend(
+                [
+                    "--prefix-cache-l2",
+                    "--prefix-cache-l2-dir",
+                    os.environ.get("DFLASH_PREFIX_CACHE_L2_DIR", str(workspace / ".artifacts/dflash/prefix-l2")),
+                    "--prefix-cache-l2-max-bytes",
+                    os.environ.get("DFLASH_PREFIX_CACHE_L2_MAX_BYTES", "53687091200"),
+                ]
+            )
+        return command
 
     def _set_ready_from_probe(self) -> None:
         with self.lock:
@@ -788,7 +876,7 @@ class GatewayHandler(http.server.BaseHTTPRequestHandler):
         body: bytes | None,
     ) -> ModelSpec:
         requested_model: str | None = None
-        if route == "/v1/chat/completions" and body and "application/json" in content_type.lower():
+        if route in {"/v1/chat/completions", "/v1/responses"} and body and "application/json" in content_type.lower():
             try:
                 payload = json.loads(body)
             except json.JSONDecodeError as exc:
@@ -864,7 +952,10 @@ class GatewayHandler(http.server.BaseHTTPRequestHandler):
                     body=body,
                 )
                 self.manager.ensure_ready(request_id, model)
-            response_status = self._proxy(request_id, body)
+            if route == "/v1/responses" and self.command == "POST":
+                response_status = self._responses_proxy(request_id, body)
+            else:
+                response_status = self._proxy(request_id, body)
         except GatewayError as exc:
             response_status = exc.status
             self.logger.write("ERROR", "request_gateway_error", request_id=request_id, status=exc.status, error=exc.message)
@@ -886,6 +977,367 @@ class GatewayHandler(http.server.BaseHTTPRequestHandler):
                 status=response_status,
                 duration_ms=duration_ms,
             )
+
+    def _responses_proxy(self, request_id: str, body: bytes | None) -> int:
+        payload = self._read_json_object(body)
+        chat_payload = self._responses_payload_to_chat(payload)
+        if chat_payload.get("stream") is True:
+            return self._responses_stream_proxy(request_id, chat_payload)
+        return self._responses_json_proxy(request_id, chat_payload)
+
+    def _read_json_object(self, body: bytes | None) -> dict[str, object]:
+        if body is None or body == b"":
+            return {}
+        try:
+            value = json.loads(body)
+        except json.JSONDecodeError as exc:
+            raise GatewayError(400, f"Invalid JSON request body: {exc}") from exc
+        if not isinstance(value, dict):
+            raise GatewayError(400, "JSON request body must be an object")
+        return value
+
+    def _responses_payload_to_chat(self, payload: dict[str, object]) -> dict[str, object]:
+        model = payload.get("model")
+        if not isinstance(model, str) or not model:
+            default_model = self.config.default_model
+            if default_model is None:
+                raise GatewayError(404, "No DFlash model is configured")
+            model = default_model.id
+
+        messages: list[dict[str, str]] = []
+        instructions = payload.get("instructions")
+        if isinstance(instructions, str) and instructions:
+            messages.append({"role": "system", "content": instructions})
+
+        if isinstance(payload.get("messages"), list):
+            for item in payload["messages"]:  # type: ignore[index]
+                message = self._responses_item_to_chat_message(item)
+                if message is not None:
+                    messages.append(message)
+        else:
+            response_input = payload.get("input")
+            if response_input is None:
+                response_input = ""
+            if isinstance(response_input, list):
+                for item in response_input:
+                    message = self._responses_item_to_chat_message(item)
+                    if message is not None:
+                        messages.append(message)
+            else:
+                text = self._responses_content_to_text(response_input)
+                if text:
+                    messages.append({"role": "user", "content": text})
+
+        if not messages:
+            messages.append({"role": "user", "content": ""})
+
+        chat_payload: dict[str, object] = {
+            "model": model,
+            "messages": messages,
+            "stream": bool(payload.get("stream", False)),
+        }
+        if "max_output_tokens" in payload:
+            chat_payload["max_tokens"] = payload["max_output_tokens"]
+        elif "max_tokens" in payload:
+            chat_payload["max_tokens"] = payload["max_tokens"]
+        else:
+            chat_payload["max_tokens"] = self.config.default_chat_max_tokens
+        for key in ("temperature", "top_p", "stop", "presence_penalty", "frequency_penalty"):
+            if key in payload:
+                chat_payload[key] = payload[key]
+        tools = payload.get("tools")
+        if tools:
+            tools_count = len(tools) if isinstance(tools, list) else 1
+            self.logger.write("WARNING", "responses_tools_ignored", tools_count=tools_count)
+        return chat_payload
+
+    def _responses_item_to_chat_message(self, item: object) -> dict[str, str] | None:
+        if isinstance(item, str):
+            return {"role": "user", "content": item}
+        if not isinstance(item, dict):
+            text = self._responses_content_to_text(item)
+            return {"role": "user", "content": text} if text else None
+
+        role_value = item.get("role", "user")
+        role = role_value if isinstance(role_value, str) else "user"
+        if role not in {"system", "user", "assistant", "tool"}:
+            role = "user"
+
+        item_type = item.get("type")
+        if item_type == "function_call_output":
+            role = "tool"
+            content = item.get("output", "")
+        else:
+            content = item.get("content", item.get("text", item.get("output", "")))
+        text = self._responses_content_to_text(content)
+        return {"role": role, "content": text} if text or role == "user" else None
+
+    def _responses_content_to_text(self, content: object) -> str:
+        if content is None:
+            return ""
+        if isinstance(content, str):
+            return content
+        if isinstance(content, list):
+            parts = [self._responses_content_to_text(item) for item in content]
+            return "\n".join(part for part in parts if part)
+        if isinstance(content, dict):
+            for key in ("text", "output", "content"):
+                value = content.get(key)
+                if isinstance(value, (str, list, dict)):
+                    text = self._responses_content_to_text(value)
+                    if text:
+                        return text
+            return ""
+        return str(content)
+
+    def _responses_json_proxy(self, request_id: str, chat_payload: dict[str, object]) -> int:
+        body = json.dumps(chat_payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        headers = {
+            "Content-Type": "application/json",
+            "Content-Length": str(len(body)),
+            "Connection": "close",
+            "X-Request-ID": request_id,
+        }
+        conn = http.client.HTTPConnection(
+            self.config.backend_host,
+            self.config.backend_port,
+            timeout=self.config.request_timeout_s,
+        )
+        try:
+            conn.request("POST", "/v1/chat/completions", body=body, headers=headers)
+            response = conn.getresponse()
+            raw_body = response.read()
+            if not 200 <= response.status < 300:
+                self._send_json(
+                    response.status,
+                    {"error": "Backend chat completion failed", "backend_status": response.status, "body": raw_body.decode("utf-8", "replace")},
+                    request_id=request_id,
+                )
+                return response.status
+            chat_response = json.loads(raw_body)
+            text = self._chat_completion_text(chat_response)
+            payload = self._make_responses_payload(
+                model=str(chat_payload.get("model", "")),
+                text=text,
+                chat_response=chat_response if isinstance(chat_response, dict) else {},
+            )
+            self._send_json(200, payload, request_id=request_id)
+            return 200
+        except (OSError, http.client.HTTPException, socket.timeout) as exc:
+            self.logger.write("ERROR", "responses_proxy_failed", request_id=request_id, error=repr(exc))
+            raise GatewayError(502, "Backend responses shim request failed") from exc
+        finally:
+            with contextlib.suppress(Exception):
+                conn.close()
+
+    def _responses_stream_proxy(self, request_id: str, chat_payload: dict[str, object]) -> int:
+        body = json.dumps(chat_payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        headers = {
+            "Content-Type": "application/json",
+            "Content-Length": str(len(body)),
+            "Connection": "close",
+            "X-Request-ID": request_id,
+        }
+        conn = http.client.HTTPConnection(
+            self.config.backend_host,
+            self.config.backend_port,
+            timeout=self.config.request_timeout_s,
+        )
+        response_id = f"resp_{uuid.uuid4().hex}"
+        item_id = f"msg_{uuid.uuid4().hex}"
+        created_at = int(time.time())
+        text_parts: list[str] = []
+        try:
+            conn.request("POST", "/v1/chat/completions", body=body, headers=headers)
+            response = conn.getresponse()
+            if not 200 <= response.status < 300:
+                raw_body = response.read()
+                self._send_json(
+                    response.status,
+                    {"error": "Backend streaming chat completion failed", "backend_status": response.status, "body": raw_body.decode("utf-8", "replace")},
+                    request_id=request_id,
+                )
+                return response.status
+
+            self.send_response(200)
+            self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+            self.send_header("Cache-Control", "no-cache")
+            self.send_header("Connection", "close")
+            self.send_header("X-Request-ID", request_id)
+            self.end_headers()
+
+            model = str(chat_payload.get("model", ""))
+            base_response = self._make_responses_payload(model=model, text="", response_id=response_id, item_id=item_id, created_at=created_at)
+            self._write_sse("response.created", {"type": "response.created", "response": base_response})
+            self._write_sse("response.in_progress", {"type": "response.in_progress", "response": {**base_response, "status": "in_progress"}})
+            self._write_sse(
+                "response.output_item.added",
+                {
+                    "type": "response.output_item.added",
+                    "output_index": 0,
+                    "item": {"id": item_id, "type": "message", "status": "in_progress", "role": "assistant", "content": []},
+                },
+            )
+            self._write_sse(
+                "response.content_part.added",
+                {
+                    "type": "response.content_part.added",
+                    "item_id": item_id,
+                    "output_index": 0,
+                    "content_index": 0,
+                    "part": {"type": "output_text", "text": "", "annotations": []},
+                },
+            )
+
+            while True:
+                line = response.readline()
+                if not line:
+                    break
+                stripped = line.strip()
+                if not stripped.startswith(b"data:"):
+                    continue
+                raw = stripped.removeprefix(b"data:").strip()
+                if raw == b"[DONE]":
+                    break
+                if not raw:
+                    continue
+                try:
+                    chunk = json.loads(raw)
+                except json.JSONDecodeError:
+                    continue
+                delta = self._chat_stream_delta_text(chunk)
+                if not delta:
+                    continue
+                text_parts.append(delta)
+                self._write_sse(
+                    "response.output_text.delta",
+                    {
+                        "type": "response.output_text.delta",
+                        "item_id": item_id,
+                        "output_index": 0,
+                        "content_index": 0,
+                        "delta": delta,
+                    },
+                )
+
+            text = "".join(text_parts)
+            self._write_sse(
+                "response.output_text.done",
+                {
+                    "type": "response.output_text.done",
+                    "item_id": item_id,
+                    "output_index": 0,
+                    "content_index": 0,
+                    "text": text,
+                },
+            )
+            final_response = self._make_responses_payload(
+                model=model,
+                text=text,
+                response_id=response_id,
+                item_id=item_id,
+                created_at=created_at,
+            )
+            self._write_sse(
+                "response.content_part.done",
+                {
+                    "type": "response.content_part.done",
+                    "item_id": item_id,
+                    "output_index": 0,
+                    "content_index": 0,
+                    "part": {"type": "output_text", "text": text, "annotations": []},
+                },
+            )
+            self._write_sse("response.output_item.done", {"type": "response.output_item.done", "output_index": 0, "item": final_response["output"][0]})
+            self._write_sse("response.completed", {"type": "response.completed", "response": final_response})
+            self.wfile.write(b"data: [DONE]\n\n")
+            self.wfile.flush()
+            self.close_connection = True
+            return 200
+        except (OSError, http.client.HTTPException, socket.timeout) as exc:
+            self.logger.write("ERROR", "responses_stream_proxy_failed", request_id=request_id, error=repr(exc))
+            self.close_connection = True
+            return 502
+        finally:
+            with contextlib.suppress(Exception):
+                conn.close()
+
+    def _chat_completion_text(self, chat_response: object) -> str:
+        if not isinstance(chat_response, dict):
+            return ""
+        choices = chat_response.get("choices")
+        if not isinstance(choices, list) or not choices:
+            return ""
+        first = choices[0]
+        if not isinstance(first, dict):
+            return ""
+        message = first.get("message")
+        if isinstance(message, dict):
+            content = message.get("content")
+            if isinstance(content, str):
+                return content
+        text = first.get("text")
+        return text if isinstance(text, str) else ""
+
+    def _chat_stream_delta_text(self, chunk: object) -> str:
+        if not isinstance(chunk, dict):
+            return ""
+        choices = chunk.get("choices")
+        if not isinstance(choices, list) or not choices:
+            return ""
+        first = choices[0]
+        if not isinstance(first, dict):
+            return ""
+        delta = first.get("delta")
+        if isinstance(delta, dict):
+            content = delta.get("content")
+            if isinstance(content, str):
+                return content
+        text = first.get("text")
+        return text if isinstance(text, str) else ""
+
+    def _make_responses_payload(
+        self,
+        model: str,
+        text: str,
+        chat_response: dict[str, object] | None = None,
+        response_id: str | None = None,
+        item_id: str | None = None,
+        created_at: int | None = None,
+    ) -> dict[str, object]:
+        response_id = response_id or f"resp_{uuid.uuid4().hex}"
+        item_id = item_id or f"msg_{uuid.uuid4().hex}"
+        usage = (chat_response or {}).get("usage", {}) if chat_response else {}
+        if not isinstance(usage, dict):
+            usage = {}
+        return {
+            "id": response_id,
+            "object": "response",
+            "created_at": created_at or int(time.time()),
+            "status": "completed",
+            "model": model,
+            "output": [
+                {
+                    "id": item_id,
+                    "type": "message",
+                    "status": "completed",
+                    "role": "assistant",
+                    "content": [{"type": "output_text", "text": text, "annotations": []}],
+                }
+            ],
+            "output_text": text,
+            "usage": {
+                "input_tokens": usage.get("prompt_tokens", 0),
+                "output_tokens": usage.get("completion_tokens", 0),
+                "total_tokens": usage.get("total_tokens", 0),
+            },
+        }
+
+    def _write_sse(self, event: str, data: dict[str, object]) -> None:
+        encoded = json.dumps(data, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        self.wfile.write(b"event: " + event.encode("utf-8") + b"\n")
+        self.wfile.write(b"data: " + encoded + b"\n\n")
+        self.wfile.flush()
 
     def _content_length(self) -> int:
         transfer_encoding = self.headers.get("Transfer-Encoding", "")

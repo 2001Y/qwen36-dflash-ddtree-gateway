@@ -5,12 +5,13 @@ Apple Silicon Mac で、`TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit` を DFlash
 このリポジトリは次を含みます。
 
 - DFlash backend をオンデマンド起動し、未使用 30 分で停止する OpenAI 互換 gateway
-- local cache 上の DFlash 対応 model を `/v1/models` に出し、request の `model` に応じて backend を切り替える gateway
+- project-local cache 上の DFlash 対応 model を `/v1/models` に出し、request の `model` に応じて backend を切り替える gateway
 - 現行の TheCluster + `z-lab/Qwen3.6-35B-A3B-DFlash` 標準設定
+- download と memory load lifecycle を分離した `.models` 前提の運用設定
 - DDTree 実験実装のコピー
 - ts-bench 比較で使ったスクリプト、ランキング、主要 summary artifact
 
-モデル重み、Hugging Face キャッシュ、`.venv`、巨大な実行ログは含めません。
+モデル重み、Hugging Face キャッシュ、`.venv`、巨大な実行ログは含めません。gateway は download を責務にしません。モデル取得は明示的に `scripts/download-models.command` などで事前に行い、gateway/backend は `.models` に存在するモデルを memory load / unload するだけです。
 
 ## 結論
 
@@ -93,6 +94,30 @@ uv pip install -e bench/ddtree-mlx
 brew install uv
 ```
 
+## モデルを事前取得する
+
+モデル保存先は project-local の `.models/huggingface` です。標準 `.env` では次を使います。
+
+```env
+DFLASH_MODELS_DIR=.models
+HF_HUB_OFFLINE=1
+TRANSFORMERS_OFFLINE=1
+```
+
+download は gateway の責務ではありません。取得するときだけ offline 変数を外した専用スクリプトを使います。
+
+```bash
+./scripts/download-models.command
+```
+
+既に別場所へ HF cache を持っている場合は、次のような構造で `.models/huggingface/hub` に移してください。
+
+```text
+.models/huggingface/hub/models--TheCluster--Qwen3.6-35B-A3B-Heretic-MLX-4bit
+.models/huggingface/hub/models--Youssofal--Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit
+.models/huggingface/hub/models--z-lab--Qwen3.6-35B-A3B-DFlash
+```
+
 ## DFlash gateway を起動する
 
 通常はこちらを使います。
@@ -116,12 +141,12 @@ Jan や OpenAI 互換クライアントで model を切り替えると、gateway
 client
   -> http://127.0.0.1:8000/v1/chat/completions
   -> dflash_gateway.py
-  -> scripts/start-dflash-backend.command
-  -> scripts/start-dflash.command
+  -> internal backend launcher
+  -> .venv/bin/dflash serve
   -> dflash-mlx backend on 127.0.0.1:8001
 ```
 
-最初の 1 回は、モデルのダウンロードまたはメモリロードで長く待ちます。gateway は backend が `/v1/models` を返すまで待ってから request を転送します。
+最初の 1 回は、memory load で長く待ちます。gateway は backend が `/v1/models` を返すまで待ってから request を転送します。モデルが `.models` に存在しない場合は backend 起動が失敗します。gateway はそこで暗黙 download しません。
 
 MLX は Metal GPU を使うため、macOS の通常ユーザーセッションから起動してください。headless / sandboxed な実行環境から backend を起動すると `No Metal device available` で失敗することがあります。
 
@@ -131,6 +156,44 @@ OpenAI 互換クライアントには次を設定します。
 Base URL: http://127.0.0.1:8000/v1
 API Key: dummy
 Model: TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit
+```
+
+Codex CLI の provider 例:
+
+```toml
+[model_providers.dflash-qwen]
+name = "DFlash Qwen3.6"
+base_url = "http://127.0.0.1:8000/v1"
+wire_api = "responses"
+env_key = "DFLASH_API_KEY"
+
+[profiles.dflash-qwen]
+model = "TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit"
+model_provider = "dflash-qwen"
+```
+
+OpenCode の provider 例:
+
+```jsonc
+{
+  "provider": {
+    "dflash-qwen": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "DFlash Qwen3.6",
+      "options": {
+        "baseURL": "http://127.0.0.1:8000/v1"
+      },
+      "models": {
+        "TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit": {
+          "name": "TheCluster Qwen3.6 35B A3B Heretic MLX 4bit"
+        },
+        "Youssofal/Qwen3.6-35B-A3B-Abliterated-Heretic-MLX-4bit": {
+          "name": "Youssofal Qwen3.6 35B A3B Abliterated Heretic MLX 4bit"
+        }
+      }
+    }
+  }
+}
 ```
 
 疎通確認:
@@ -174,7 +237,7 @@ curl -s http://127.0.0.1:8000/gateway/metrics
 
 ```text
 .artifacts/dflash/gateway/events.jsonl
-.artifacts/dflash/gateway/backend-*.log
+.artifacts/dflash/gateway/backend.log
 ```
 
 ## DDTree server を起動する

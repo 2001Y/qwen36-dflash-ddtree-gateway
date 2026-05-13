@@ -5,6 +5,18 @@ SCRIPT_DIR="${0:A:h}"
 ROOT_DIR="${SCRIPT_DIR:h}"
 cd "$ROOT_DIR"
 
+ENV_FILE="$ROOT_DIR/.env"
+if [[ -f "$ENV_FILE" ]]; then
+  set -a
+  source "$ENV_FILE"
+  set +a
+fi
+
+MODELS_DIR="${DFLASH_MODELS_DIR:-$ROOT_DIR/.models}"
+if [[ "$MODELS_DIR" != /* ]]; then
+  MODELS_DIR="$ROOT_DIR/$MODELS_DIR"
+fi
+
 VENV_PY="${DFLASH_PYTHON:-$ROOT_DIR/.venv/bin/python}"
 DFLASH="${DFLASH_BIN:-$ROOT_DIR/.venv/bin/dflash}"
 
@@ -21,6 +33,13 @@ PREFIX_CACHE_MAX_BYTES="${DFLASH_PREFIX_CACHE_MAX_BYTES:-8589934592}"
 PREFIX_CACHE_L2="${DFLASH_PREFIX_CACHE_L2:-0}"
 PREFIX_CACHE_L2_DIR="${DFLASH_PREFIX_CACHE_L2_DIR:-$ROOT_DIR/.artifacts/dflash/prefix-l2}"
 PREFIX_CACHE_L2_MAX_BYTES="${DFLASH_PREFIX_CACHE_L2_MAX_BYTES:-53687091200}"
+
+export DFLASH_MODELS_DIR="$MODELS_DIR"
+export HF_HOME="${HF_HOME:-$MODELS_DIR/huggingface}"
+export HF_HUB_CACHE="${HF_HUB_CACHE:-$HF_HOME/hub}"
+export HF_XET_CACHE="${HF_XET_CACHE:-$HF_HOME/xet}"
+export HF_HUB_OFFLINE="${HF_HUB_OFFLINE:-1}"
+export TRANSFORMERS_OFFLINE="${TRANSFORMERS_OFFLINE:-1}"
 
 log() {
   printf '[%s] %s\n' "$(date '+%Y-%m-%dT%H:%M:%S%z')" "$*"
@@ -50,6 +69,7 @@ if [[ "${1:-}" == "--check" ]]; then
   log "Prefill step: $PREFILL_STEP_SIZE"
   log "Prefix L1: entries=$PREFIX_CACHE_MAX_ENTRIES bytes=$PREFIX_CACHE_MAX_BYTES"
   log "Prefix L2: $PREFIX_CACHE_L2"
+  log "Model cache: $HF_HUB_CACHE"
   exit 0
 fi
 
@@ -62,8 +82,9 @@ log "Profile: $PROFILE"
 log "Prefill step: $PREFILL_STEP_SIZE"
 log "Prefix L1: entries=$PREFIX_CACHE_MAX_ENTRIES bytes=$PREFIX_CACHE_MAX_BYTES"
 log "Prefix L2: $PREFIX_CACHE_L2"
+log "Model cache: $HF_HUB_CACHE"
 log "Ready:  curl http://$HOST:$PORT/v1/models"
-log "Note:   first launch downloads and loads the models before the API starts listening"
+log "Note:   gateway/backend only load models from the configured local cache"
 log "Stop:   press Ctrl-C in this Terminal window"
 
 ARGS=(

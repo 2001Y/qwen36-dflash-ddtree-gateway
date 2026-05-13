@@ -1,6 +1,7 @@
 import os
 import tempfile
 import unittest
+from types import SimpleNamespace
 from pathlib import Path
 from unittest.mock import patch
 
@@ -13,6 +14,16 @@ def make_cached_model(hub: Path, model_id: str) -> None:
 
 
 class DFlashGatewayModelDiscoveryTests(unittest.TestCase):
+    def test_hf_hub_cache_takes_precedence_over_hf_home(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            explicit_hub = Path(tmp) / "explicit-hub"
+            hf_home = Path(tmp) / "hf-home"
+
+            with patch.dict(os.environ, {"HF_HUB_CACHE": str(explicit_hub), "HF_HOME": str(hf_home)}, clear=False):
+                cache_root = dflash_gateway.hf_hub_cache_root()
+
+        self.assertEqual(cache_root, explicit_hub)
+
     def test_discovers_local_qwen35_targets_with_shared_draft(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             hf_home = Path(tmp) / "hf"
@@ -33,6 +44,26 @@ class DFlashGatewayModelDiscoveryTests(unittest.TestCase):
         )
         self.assertEqual({spec.draft for spec in specs}, {"z-lab/Qwen3.6-35B-A3B-DFlash"})
 
+    def test_reads_plain_env_file_defaults_when_cache_is_empty(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = Path(tmp)
+            (workspace / ".env").write_text(
+                "\n".join(
+                    [
+                        "DFLASH_MODEL=TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit",
+                        "DFLASH_DRAFT=z-lab/Qwen3.6-35B-A3B-DFlash",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+
+            with patch.dict(os.environ, {"HF_HUB_CACHE": str(workspace / "empty-hub")}, clear=True):
+                specs = dflash_gateway.discover_local_model_specs(workspace)
+
+        self.assertEqual(len(specs), 1)
+        self.assertEqual(specs[0].id, "TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit")
+        self.assertEqual(specs[0].draft, "z-lab/Qwen3.6-35B-A3B-DFlash")
+
     def test_models_payload_is_openai_compatible(self) -> None:
         specs = (
             dflash_gateway.ModelSpec(
@@ -47,6 +78,52 @@ class DFlashGatewayModelDiscoveryTests(unittest.TestCase):
         self.assertEqual(payload["data"][0]["id"], "TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit")
         self.assertEqual(payload["data"][0]["object"], "model")
         self.assertEqual(payload["data"][0]["owned_by"], "dflash")
+
+    def test_responses_payload_converts_to_chat_payload(self) -> None:
+        handler = object.__new__(dflash_gateway.GatewayHandler)
+        config = SimpleNamespace(
+            default_model=dflash_gateway.ModelSpec(
+                id="TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit",
+                draft="z-lab/Qwen3.6-35B-A3B-DFlash",
+            ),
+            default_chat_max_tokens=4096,
+        )
+        handler.server = SimpleNamespace(config=config, logger=SimpleNamespace(write=lambda *args, **kwargs: None))
+
+        payload = handler._responses_payload_to_chat(
+            {
+                "model": "TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit",
+                "instructions": "System note",
+                "input": [
+                    {
+                        "role": "user",
+                        "content": [{"type": "input_text", "text": "Return exactly OK"}],
+                    }
+                ],
+                "max_output_tokens": 8,
+                "stream": True,
+            }
+        )
+
+        self.assertEqual(payload["model"], "TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit")
+        self.assertEqual(payload["messages"][0], {"role": "system", "content": "System note"})
+        self.assertEqual(payload["messages"][1], {"role": "user", "content": "Return exactly OK"})
+        self.assertEqual(payload["max_tokens"], 8)
+        self.assertTrue(payload["stream"])
+
+    def test_response_payload_is_responses_compatible(self) -> None:
+        handler = object.__new__(dflash_gateway.GatewayHandler)
+        payload = handler._make_responses_payload(
+            model="TheCluster/Qwen3.6-35B-A3B-Heretic-MLX-4bit",
+            text="OK",
+            chat_response={"usage": {"prompt_tokens": 3, "completion_tokens": 1, "total_tokens": 4}},
+        )
+
+        self.assertEqual(payload["object"], "response")
+        self.assertEqual(payload["status"], "completed")
+        self.assertEqual(payload["output_text"], "OK")
+        self.assertEqual(payload["output"][0]["content"][0]["type"], "output_text")
+        self.assertEqual(payload["usage"]["total_tokens"], 4)
 
 
 if __name__ == "__main__":
